@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import "package:irm_prototype1/login_page.dart";
 
+
 void main() => runApp(new MaterialApp(home: SplashPage(),));
 
 
@@ -16,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
 
     return new SplashScreen(
 
-      seconds: 3,
+      seconds: 5,
       navigateAfterSeconds: new MainLoginPage(),
       title: new Text(
         "welcome to IRM App",

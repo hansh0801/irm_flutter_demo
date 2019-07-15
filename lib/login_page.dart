@@ -11,7 +11,8 @@ import 'home_page.dart';
 
 import 'irm_auth.dart';
 
-Alice alice = Alice(showNotification: true); //notification 줘서 뭘 받는지 알 수 있게
+//Alice alice = Alice(showNotification: true); //notification 줘서 뭘 받는지 알 수 있게
+var token;
 
 class MainLoginPage extends StatefulWidget {
   @override
@@ -48,48 +49,59 @@ class _LoginPageState extends State<LoginPage> {
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: new AppBar(title: new Text("IRM Test apk")),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-            child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: buildSubmitButtons(),
-        )),
+      //appBar: new AppBar(title: new Text("IRM Test app")),
+      body: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.stretch,
+
+            children: buildSubmitButtons()),
+//            buildSubmitButtons()
       ),
     );
   }
 
+/*  new Container(
+  padding: EdgeInsets.all(16.0),
+  child: new Form(
+  child: new Column(
+  crossAxisAlignment: CrossAxisAlignment.stretch,
+  children: buildSubmitButtons(),
+  )),
+  ),*/
   Future<Null> login() async {
     final _token = await getToken();
-    print("token is $_token");
   }
 
   List<Widget> buildSubmitButtons() {
     return [
       Image.asset(
-        "images/sample.png",
-        width: 200,
-        height: 200,
-        fit: BoxFit.cover,
+        "images/irm_logo.png",
+        width: 300,
+        height: 100,
+        //fit: BoxFit.cover,
       ),
-      SizedBox(
+      /*SizedBox(
         height: 30.0,
-      ),
+      ),*/
       new RaisedButton(
           child: new Text(
             "login with IRM Account",
-            style: new TextStyle(fontSize: 20.0),
+            style: new TextStyle(fontSize: 20.0,color: Colors.white),
           ),
-          onPressed: () => login()),
+
+          onPressed: () => login(),
+        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(20.0)),
+        color: Colors.lightBlue,
+
+
+    ),
+
       SizedBox(
         height: 5.0,
       ),
-      new RaisedButton(
-          child: new Text("alice"), onPressed: () => alice.showInspector()),
     ];
   }
-
 
   Future<Stream<String>> _server() async {
     final StreamController<String> onCode = new StreamController();
@@ -113,7 +125,6 @@ class _LoginPageState extends State<LoginPage> {
     String url =
         'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken&state=xyz';
 
-
     final FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.launch(url /*, clearCache: true, clearCookies: true*/);
     Stream<String> onCode = await _server(); //
@@ -136,8 +147,8 @@ class _LoginPageState extends State<LoginPage> {
         "grant_type": "authorization_code"
       },
     ).then((response) {
-      alice.onHttpResponse(response);
-      var token = json.decode(response.body);
+     // alice.onHttpResponse(response);
+      token = json.decode(response.body);
       //showMessage(token["access_token"]);
       if (token["access_token"] != null) {
         Navigator.push(
