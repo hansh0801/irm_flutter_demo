@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 
-Token token=Token("", "", 0);
+Token token=Token("", "", 0,"");
 bool token_exist=false;
 
 User_Info userinfo;
@@ -37,13 +37,16 @@ class Token {
   final String access_token;
   final String token_type;
   final num expires_In;
+  final String authCode;
 
-  Token(this.access_token, this.token_type, this.expires_In);
+  Token(this.access_token, this.token_type, this.expires_In,this.authCode);
 
   Token.fromMap(Map<String, dynamic> json)
       : access_token = json['access_token'],
         token_type = json['token_type'],
-        expires_In = json['expires_in'];
+        expires_In = json['expires_in'],
+        authCode = json['authcode'];
+
 
 
 
@@ -53,13 +56,13 @@ class Token {
 
 
 class User_Info {
-  final String authCode;
+
   final String client_id;
   final String username;
 
-  User_Info(this.authCode, this.username, this.client_id);
+  User_Info( this.username, this.client_id);
   User_Info.fromMap(Map<String, dynamic> json)
-      : authCode = json['authcode'],
+      :
 
         client_id = json["client_id"],
         username = json["username"];
@@ -84,3 +87,37 @@ Future<Stream<String>> server() async {
   return onCode.stream;
 }
 
+Future<User_Info> getUserInfo() async{
+
+  final http.Response userinforesponse = await http.post(
+    "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
+    headers: {
+      'Accept': 'application/json',
+      'Authorization':
+      'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
+      'Host': 'front-vl-dev.irm.kr',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: {"token": token.access_token, "token_type_hint": "access_token"},
+  ).then((userinforesponse) {
+    var temp_userinfo = json.decode(userinforesponse.body);
+
+
+
+    userinfo = User_Info(
+         temp_userinfo['client_id'], temp_userinfo['username']);
+
+    print(userinfo.client_id);
+    print(userinfo.username);
+  });
+
+
+}
+
+
+Future<Null> logout() async {
+
+  token = Token("", "", 0,"");
+
+
+}

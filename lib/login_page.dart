@@ -22,7 +22,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      navigatorKey: alice.getNavigatorKey(),
+      //navigatorKey: alice.getNavigatorKey(),
       debugShowCheckedModeBanner: false,
       title: "IRM Test App",
       theme: new ThemeData(
@@ -37,18 +37,26 @@ final IRMAuth irmApi = new IRMAuth("FRONT-VL Dev04", "front-vl-dev04",
     "front-vl-dev04-secret", "http://localhost:8080");
 
 class LoginPage extends StatefulWidget {
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+   //GlobalObjectKey<ScaffoldState> _scaffoldKey;
   @override
+  /*initState(){
+    super.initState();
+    _scaffoldKey = new GlobalObjectKey<ScaffoldState>(1);
+
+
+  }*/
   Widget build(BuildContext context) {
-    SimpleAuthFlutter.init(context);
+
 
     return Scaffold(
-      key: _scaffoldKey,
+
+     // key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       //appBar: new AppBar(title: new Text("IRM Test app")),
       body: Center(
@@ -63,27 +71,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<Null> login() async {
+    await getToken();
+    await getUserInfo();
     if (token.access_token != "") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => Home_Page()),
       );
-    } else {
-      await getToken();
     }
 
     //print(token);
     //print(userinfo);
-  }
-
-  Future<Null> logout() async {
-    if (token.access_token != "") {
-      token_exist = true;
-      token = Token("", "", 0);
-    } else {
-      token_exist = false;
-      print("no token");
-    }
   }
 
   List<Widget> buildSubmitButtons() {
@@ -110,30 +108,7 @@ class _LoginPageState extends State<LoginPage> {
       SizedBox(
         height: 5.0,
       ),
-      new RaisedButton(
-        child: new Text(
-          "Log out",
-          style: new TextStyle(fontSize: 20.0, color: Colors.white),
-        ),
-        onPressed: () {
-          logout();
-          final snackBar = SnackBar(
-            content: token_exist
-                ? Text('SucessFully logouted to IRM')
-                : Text("you did not logined to IRM."),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                // Some code to undo the change.
-              },
-            ),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        },
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(20.0)),
-        color: Colors.lightBlue,
-      ),
+
     ];
   }
 
@@ -168,39 +143,11 @@ class _LoginPageState extends State<LoginPage> {
     ).then((response) {
       var temp_token = json.decode(response.body);
       token = Token(temp_token['access_token'], temp_token['token_type'],
-          temp_token['expires_in']);
+          temp_token['expires_in'], code);
 
-      if (token.access_token != "") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      }
       //print('token is $token');
     });
 
-    final http.Response userinforesponse = await http.post(
-      "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
-      headers: {
-        'Accept': 'application/json',
-        'Authorization':
-            'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
-        'Host': 'front-vl-dev.irm.kr',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: {"token": token.access_token, "token_type_hint": "access_token"},
-    ).then((userinforesponse) {
-      var temp_userinfo = json.decode(userinforesponse.body);
-
-      //alice.onHttpResponse(userinforesponse);
-
-      userinfo = User_Info(
-          code, temp_userinfo['client_id'], temp_userinfo['username']);
-       print(userinfo.authCode);
-       print(userinfo.client_id);
-       print(userinfo.username);
-    });
-
-    return new Token.fromMap(json.decode(response.body));
+    //return new Token.fromMap(json.decode(response.body));
   }
 }
