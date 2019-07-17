@@ -6,12 +6,11 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'package:alice/alice.dart';
+
 import 'home_page.dart';
 
 import 'irm_auth.dart';
 
-Alice alice = Alice(showNotification: true); //notification 줘서 뭘 받는지 알 수 있게
 
 class MainLoginPage extends StatefulWidget {
   @override
