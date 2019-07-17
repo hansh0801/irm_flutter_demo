@@ -11,8 +11,7 @@ import 'home_page.dart';
 
 import 'irm_auth.dart';
 
-//Alice alice = Alice(showNotification: true); //notification 줘서 뭘 받는지 알 수 있게
-var token;
+Alice alice = Alice(showNotification: true); //notification 줘서 뭘 받는지 알 수 있게
 
 class MainLoginPage extends StatefulWidget {
   @override
@@ -23,7 +22,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      //navigatorKey: alice.getNavigatorKey(),
+      navigatorKey: alice.getNavigatorKey(),
       debugShowCheckedModeBanner: false,
       title: "IRM Test App",
       theme: new ThemeData(
@@ -43,11 +42,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     SimpleAuthFlutter.init(context);
 
-    return new Scaffold(
+    return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       //appBar: new AppBar(title: new Text("IRM Test app")),
       body: Center(
@@ -61,16 +62,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-/*  new Container(
-  padding: EdgeInsets.all(16.0),
-  child: new Form(
-  child: new Column(
-  crossAxisAlignment: CrossAxisAlignment.stretch,
-  children: buildSubmitButtons(),
-  )),
-  ),*/
   Future<Null> login() async {
-    final _token = await getToken();
+    if (token.access_token != "") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      await getToken();
+    }
+
+    //print(token);
+    //print(userinfo);
+  }
+
+  Future<Null> logout() async {
+    if (token.access_token != "") {
+      token_exist = true;
+      token = Token("", "", 0);
+    } else {
+      token_exist = false;
+      print("no token");
+    }
   }
 
   List<Widget> buildSubmitButtons() {
@@ -85,40 +98,43 @@ class _LoginPageState extends State<LoginPage> {
         height: 30.0,
       ),*/
       new RaisedButton(
-          child: new Text(
-            "login with IRM Account",
-            style: new TextStyle(fontSize: 20.0,color: Colors.white),
-          ),
-
-          onPressed: () => login(),
-        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(20.0)),
+        child: new Text(
+          "login with IRM Account",
+          style: new TextStyle(fontSize: 20.0, color: Colors.white),
+        ),
+        onPressed: () => login(),
+        shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(20.0)),
         color: Colors.lightBlue,
-
-
-    ),
-
+      ),
       SizedBox(
         height: 5.0,
       ),
+      new RaisedButton(
+        child: new Text(
+          "Log out",
+          style: new TextStyle(fontSize: 20.0, color: Colors.white),
+        ),
+        onPressed: () {
+          logout();
+          final snackBar = SnackBar(
+            content: token_exist
+                ? Text('SucessFully logouted to IRM')
+                : Text("you did not logined to IRM."),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change.
+              },
+            ),
+          );
+          _scaffoldKey.currentState.showSnackBar(snackBar);
+        },
+        shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(20.0)),
+        color: Colors.lightBlue,
+      ),
     ];
-  }
-
-  Future<Stream<String>> _server() async {
-    final StreamController<String> onCode = new StreamController();
-    HttpServer server =
-        await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
-    server.listen((HttpRequest request) async {
-      final String code = request.uri.queryParameters["code"];
-      request.response
-        ..statusCode = 200
-        ..headers.set("Content-Type", ContentType.html.mimeType)
-        ..write("<html>You can now close this window</html>");
-      await request.response.close();
-      await server.close(force: true);
-      onCode.add(code);
-      await onCode.close();
-    });
-    return onCode.stream;
   }
 
   Future<Token> getToken() async {
@@ -127,9 +143,12 @@ class _LoginPageState extends State<LoginPage> {
 
     final FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.launch(url /*, clearCache: true, clearCookies: true*/);
-    Stream<String> onCode = await _server(); //
+    print("not closed");
+    Stream<String> onCode = await server(); //
     final String code = await onCode.first;
+
     webviewPlugin.close();
+    print("closed");
 
     final http.Response response = await http.post(
       "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/token",
@@ -147,16 +166,39 @@ class _LoginPageState extends State<LoginPage> {
         "grant_type": "authorization_code"
       },
     ).then((response) {
-     // alice.onHttpResponse(response);
-      token = json.decode(response.body);
-      //showMessage(token["access_token"]);
-      if (token["access_token"] != null) {
+      var temp_token = json.decode(response.body);
+      token = Token(temp_token['access_token'], temp_token['token_type'],
+          temp_token['expires_in']);
+
+      if (token.access_token != "") {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       }
-      print(token["access_token"]);
+      //print('token is $token');
+    });
+
+    final http.Response userinforesponse = await http.post(
+      "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
+      headers: {
+        'Accept': 'application/json',
+        'Authorization':
+            'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
+        'Host': 'front-vl-dev.irm.kr',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: {"token": token.access_token, "token_type_hint": "access_token"},
+    ).then((userinforesponse) {
+      var temp_userinfo = json.decode(userinforesponse.body);
+
+      //alice.onHttpResponse(userinforesponse);
+
+      userinfo = User_Info(
+          code, temp_userinfo['client_id'], temp_userinfo['username']);
+       print(userinfo.authCode);
+       print(userinfo.client_id);
+       print(userinfo.username);
     });
 
     return new Token.fromMap(json.decode(response.body));

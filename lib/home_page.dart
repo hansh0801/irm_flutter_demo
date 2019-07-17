@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-
+import 'irm_auth.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -48,8 +47,8 @@ class _Home_PageState extends State<Home_Page> {
             children: <Widget>[
 
               new UserAccountsDrawerHeader(
-                accountName: new Text('paul'),
-                accountEmail: new Text("tkdgy0801@gmail.com"),
+                accountName: new Text(userinfo.username),
+                accountEmail: new Text(userinfo.client_id),
                 currentAccountPicture: new CircleAvatar(
                   backgroundImage: new NetworkImage(
                       "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
@@ -61,10 +60,11 @@ class _Home_PageState extends State<Home_Page> {
         ),
         body: new Container(
           child: new Center(
-            child: new Text("welcome", style: new TextStyle(fontSize: 25),),
+            child: new Text('welcome to irm app', style: new TextStyle(fontSize: 25),),
           ),
         ),
       );
     }
   }
 }
+
