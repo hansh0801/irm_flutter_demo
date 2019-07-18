@@ -7,8 +7,12 @@ var patient_group;
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<String> Loaded_group;
+final TextEditingController _textEditingController= new TextEditingController();
 
-void test() async{
+void _handleSubmitted(String text) { _textEditingController.clear(); }
+
+
+void getGroupinfo() async{
   patient_group = await getGroupSearchBelonged();
 
 }
@@ -23,7 +27,7 @@ class _Patients_InfoState extends State<Patients_Info> {
 
   void  initState()  {
 
-    test();
+    getGroupinfo();
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
     super.initState();
@@ -59,6 +63,7 @@ class _Patients_InfoState extends State<Patients_Info> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: new AppBar(title: Text("patient test"),),
       body: Padding(
         padding: const EdgeInsets.all(3.0),
@@ -73,6 +78,30 @@ class _Patients_InfoState extends State<Patients_Info> {
                 value: _currentGroup,
                 items: _dropDownMenuItems,
                 onChanged: changedDropDownItem,
+
+              ),
+              new Row(
+                children: <Widget>[
+                  Flexible(
+                    child: TextField(
+                      controller: _textEditingController,
+                      onSubmitted:_handleSubmitted ,
+                      decoration: new InputDecoration.collapsed(hintText: "검색할 환자를 입력하세요",),
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                  Container(
+                    padding: new EdgeInsets.all(8.0),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: IconButton(icon: Icon(Icons.send), onPressed: ()=>_handleSubmitted(_textEditingController.text)),
+
+                  )
+
+                ],
+
 
               ),
               Image.asset(
