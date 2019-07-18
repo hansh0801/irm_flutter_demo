@@ -8,28 +8,9 @@ final String serverUrl = 'https://xdsserver-dev.irm.kr/XDSServer/api';
 final String url = 'xdsserver-dev.irm.kr';
 
 ///json 형태로 리턴
-<<<<<<< HEAD
 
-///
-Future getGroupSearchBelonged(accessToken) async {
-=======
-///자신이 속한 그룹 검색
-///    "cmd": "get-records",
-///    "limit": "100",
-///    "offset": "0",
-///    "search": [
-///        {
-///            "field": "vgroup_name",
-///            "value": "A"
-///        },
-///        {
-///            "field": "admin_role",
-///            "value": "true"
-///        }
-///    ],
-///    "searchLogic": "AND"
 Future getGroupSearchBelonged() async {
->>>>>>> dev
+
   var uri = Uri.http(
       url, '/XDSServer/api/vgroup_belonged.w2ui'); //, queryParameters);
   var ret;
