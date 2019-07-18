@@ -22,9 +22,9 @@ class _Home_PageState extends State<Home_Page> {
       child: Center(
         child:InkWell(
           onTap: (){
-            Navigator.pushNamed(
+            Navigator.push(
               context,
-              navigateto,
+              MaterialPageRoute(builder: (context) => Patients_Info()),
             );
           },
         child: Padding(

@@ -10,7 +10,7 @@ import 'medical_record.dart';
 void main() => runApp(new MaterialApp(
 initialRoute: '/', // create initial route for each page
 routes: {
-  '/':(context) =>SplashPage(),
+  //'/':(context) =>SplashPage(),
   ''
   'patients_info':(context)=>Patients_Info(),
   'new_patient':(context)=>New_Patient(),
