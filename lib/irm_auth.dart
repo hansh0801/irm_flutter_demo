@@ -5,10 +5,10 @@ import 'dart:convert';
 import 'dart:io';
 
 
-Token token=Token("", "", 0,"");
+Token token=Token("tt", "", 0,""); //token declaration and init
 bool token_exist=false;
 
-User_Info userinfo;
+User_Info userinfo; //for get userinfo using Oauth
 
 
 class IRMAuth extends OAuthApi {
@@ -87,7 +87,7 @@ Future<Stream<String>> server() async {
   return onCode.stream;
 }
 
-Future<User_Info> getUserInfo() async{
+Future<User_Info> getUserInfo() async{ //getuserinfo
 
   final http.Response userinforesponse = await http.post(
     "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
@@ -115,7 +115,7 @@ Future<User_Info> getUserInfo() async{
 }
 
 
-Future<Null> logout() async {
+Future<Null> logout() async { //for logout
 
   token = Token("", "", 0,"");
 

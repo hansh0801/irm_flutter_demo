@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'login_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'patients_info.dart';
+
 
 class Home_Page extends StatefulWidget {
   @override
@@ -9,13 +11,22 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
-  Material myItems(IconData icon, String heading, int color) {
+  Material myItems(IconData icon, String heading, int color,String navigateto) {
     return Material(
+
       color: Colors.white,
       elevation: 14.0,
       shadowColor: Color(0x802196F3),
       borderRadius: BorderRadius.circular(24.0),
+
       child: Center(
+        child:InkWell(
+          onTap: (){
+            Navigator.pushNamed(
+              context,
+              navigateto,
+            );
+          },
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
@@ -41,6 +52,7 @@ class _Home_PageState extends State<Home_Page> {
                     borderRadius: BorderRadius.circular(24.0),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
+
                       child: Icon(
                         icon,
                         color: Colors.white,
@@ -54,11 +66,12 @@ class _Home_PageState extends State<Home_Page> {
           ),
         ),
       ),
+    )
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //home page layout
     {
       return WillPopScope(
         onWillPop: () => Future.value(false),
@@ -98,10 +111,10 @@ class _Home_PageState extends State<Home_Page> {
             mainAxisSpacing: 12.0,
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             children: <Widget>[
-              myItems(Icons.people, "patients", 0xffed622b),
-              myItems(Icons.person_add, "new patient", 0xfffad610),
-              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6),
-              myItems(Icons.timeline, "medical record", 0xff702670),
+              myItems(Icons.people, "patients", 0xffed622b,'patient_info'),
+              myItems(Icons.person_add, "new patient", 0xfffad610,'new_patient'),
+              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6,'medical_info'),
+              myItems(Icons.timeline, "medical record", 0xff702670,'make_form'),
             ],
             staggeredTiles: [
               StaggeredTile.extent(2, 150.0),

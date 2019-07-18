@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import "package:irm_prototype1/login_page.dart";
+import 'home_page.dart';
+import 'patients_info.dart';
+import 'new_patient.dart';
+import 'make_form.dart';
+import 'medical_record.dart';
 
+void main() => runApp(new MaterialApp(
+initialRoute: '/', // create initial route for each page
+routes: {
+  '/':(context) =>SplashPage(),
+  ''
+  'patients_info':(context)=>Patients_Info(),
+  'new_patient':(context)=>New_Patient(),
+  'medical_record':(context)=>Medical_Record(),
+  'make_form':(context)=>Make_Form(),
 
-void main() => runApp(new MaterialApp(home: SplashPage(),));
+  },
+)
+);
 
 
 class SplashPage extends StatefulWidget {
@@ -15,7 +31,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
 
-    return new SplashScreen(
+    return new SplashScreen( //loading screen
 
       seconds: 5,
       navigateAfterSeconds: new MainLoginPage(),

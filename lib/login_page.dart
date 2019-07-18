@@ -22,7 +22,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
   Widget build(BuildContext context) {
     return new MaterialApp(
       //navigatorKey: alice.getNavigatorKey(),
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false, //for keyboard layout error handling
       title: "IRM Test App",
       theme: new ThemeData(
         primarySwatch: Colors.blue,
@@ -33,7 +33,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
 }
 
 final IRMAuth irmApi = new IRMAuth("FRONT-VL Dev04", "front-vl-dev04",
-    "front-vl-dev04-secret", "http://localhost:8080");
+    "front-vl-dev04-secret", "http://localhost:8080"); // for Oauth api information
 
 class LoginPage extends StatefulWidget {
 
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<Null> login() async {
+  Future<Null> login() async { //login
     await getToken();
     await getUserInfo();
     if (token.access_token != "") {
@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
     //print(userinfo);
   }
 
-  List<Widget> buildSubmitButtons() {
+  List<Widget> buildSubmitButtons() { //buildsubmitbuttons
     return [
       Image.asset(
         "images/irm_logo.png",
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
     ];
   }
 
-  Future<Token> getToken() async {
+  Future<Token> getToken() async { //gettoken
     String url =
         'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken&state=xyz';
 
@@ -147,6 +147,6 @@ class _LoginPageState extends State<LoginPage> {
       //print('token is $token');
     });
 
-    //return new Token.fromMap(json.decode(response.body));
+    return new Token.fromMap(json.decode(response.body));
   }
 }
