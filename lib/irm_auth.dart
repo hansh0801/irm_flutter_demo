@@ -5,10 +5,10 @@ import 'dart:convert';
 import 'dart:io';
 
 
-Token token=Token("tt", "", 0,""); //token declaration and init
+Token token=Token("", "", 0,""); //token declaration and init
 bool token_exist=false;
 
-User_Info userinfo; //for get userinfo using Oauth
+User_Info userinfo=User_Info("",""); //for get userinfo using Oauth
 
 
 class IRMAuth extends OAuthApi {
@@ -103,15 +103,16 @@ Future<User_Info> getUserInfo() async{ //getuserinfo
     var temp_userinfo = json.decode(userinforesponse.body);
 
 
-
     userinfo = User_Info(
          temp_userinfo['client_id'], temp_userinfo['username']);
 
     print(userinfo.client_id);
     print(userinfo.username);
-  });
+  }
 
+  );
 
+  return null;
 }
 
 

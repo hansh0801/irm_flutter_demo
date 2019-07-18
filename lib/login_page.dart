@@ -71,13 +71,14 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<Null> login() async { //login
     await getToken();
-    await getUserInfo();
-    if (token.access_token != "") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home_Page()),
-      );
-    }
+    print(token.access_token);
+    // getUserInfo();
+
+    Navigator.pushNamed(context, 'home_page',);
+
+
+
+
 
     //print(token);
     //print(userinfo);
@@ -144,9 +145,12 @@ class _LoginPageState extends State<LoginPage> {
       token = Token(temp_token['access_token'], temp_token['token_type'],
           temp_token['expires_in'], code);
 
-      //print('token is $token');
+      print('token is');
+      print(token.access_token);
     });
 
-    return new Token.fromMap(json.decode(response.body));
+    print(token.token_type);
+
+   // return new Token.fromMap(json.decode(response.body));
   }
 }

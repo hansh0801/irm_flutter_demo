@@ -31,6 +31,7 @@ dependencies:
   url_launcher: ^5.0.3
   oauth2:
   flutter_webview_plugin: ^0.3.5
+  fluro: ^1.5.0
 
   dio:
   flutter_staggered_grid_view: ^0.3.0

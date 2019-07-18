@@ -22,9 +22,9 @@ class _Home_PageState extends State<Home_Page> {
       child: Center(
         child:InkWell(
           onTap: (){
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(builder: (context) => Patients_Info()),
+              navigateto,
             );
           },
         child: Padding(
@@ -111,10 +111,10 @@ class _Home_PageState extends State<Home_Page> {
             mainAxisSpacing: 12.0,
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             children: <Widget>[
-              myItems(Icons.people, "patients", 0xffed622b,'patient_info'),
+              myItems(Icons.people, "patients", 0xffed622b,'patients_info'),
               myItems(Icons.person_add, "new patient", 0xfffad610,'new_patient'),
-              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6,'medical_info'),
-              myItems(Icons.timeline, "medical record", 0xff702670,'make_form'),
+              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6,'make_form'),
+              myItems(Icons.timeline, "medical record", 0xff702670,'medical_record'),
             ],
             staggeredTiles: [
               StaggeredTile.extent(2, 150.0),
