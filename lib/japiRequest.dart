@@ -33,7 +33,6 @@ Future getGroupSearchBelonged() async {
     'Content-Type': 'application/json',
   // ignore: missing_return
   }).then((response) {
-    print(token.access_token);
     ret = utf8.decode(response.bodyBytes);
   });
 
