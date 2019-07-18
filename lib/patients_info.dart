@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
+import 'japiRequest.dart';
 
 
-List _patient_group = ['11111111111111','21111111','3111111'];
+var patient_group;
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
+List<String> Loaded_group;
 
+void test() async{
+  patient_group = await getGroupSearchBelonged();
 
+}
 
 
 class Patients_Info extends StatefulWidget {
@@ -16,23 +21,30 @@ class Patients_Info extends StatefulWidget {
 
 class _Patients_InfoState extends State<Patients_Info> {
 
-  void initState() {
+  void  initState()  {
+
+    test();
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
     super.initState();
 
   }
-
+ // [index]['vgroup_name']
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String group in _patient_group) {
+    int index = 0;
+    String group;
+    for (;index<patient_group['records'].length;index++) {
       // here we are creating the drop down menu items, you can customize the item right here
       // but I'll just use a simple text for this
+      group = patient_group['records'][index]['vgroup_name'];
       items.add(new DropdownMenuItem(
           value: group,
           child: new Text(group)
       ));
+      Loaded_group.add(group);
+
     }
     return items;
   }
