@@ -7,6 +7,7 @@ final String url = 'xdsserver-dev.irm.kr';
 
 ///json 형태로 리턴
 
+///
 Future getGroupSearchBelonged(accessToken) async {
   var uri = Uri.http(
       url, '/XDSServer/api/vgroup_belonged.w2ui'); //, queryParameters);
