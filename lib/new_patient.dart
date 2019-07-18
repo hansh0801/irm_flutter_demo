@@ -14,7 +14,7 @@ class _New_PatientState extends State<New_Patient> {
     return Scaffold(
       appBar: new AppBar(title: Text("New_Patient"),),
       body: Center(
-        child: Text("New_Patient test"),
+        child: Text("New_Patient "),
       ),
 
     );

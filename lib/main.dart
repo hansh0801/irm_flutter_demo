@@ -7,7 +7,7 @@ import 'patients_info.dart';
 import 'new_patient.dart';
 import 'make_form.dart';
 import 'medical_record.dart';
-
+/////
 
 void main() {
   Router router = new Router();
