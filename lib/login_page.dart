@@ -71,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<Null> login() async { //login
     await getToken();
+    await getUserInfo();
+
     print(token.access_token);
     // getUserInfo();
 
