@@ -3,13 +3,14 @@ import "package:http/http.dart" as http;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'japiRequest.dart';
 
+Token token = Token("", "", 0, ""); //token declaration and init
+bool token_exist = false;
 
-Token token=Token("", "", 0,""); //token declaration and init
-bool token_exist=false;
+User_Info userinfo = User_Info("", ""); //for get userinfo using Oauth
 
-User_Info userinfo=User_Info("",""); //for get userinfo using Oauth
-
+var patient_group;
 
 class IRMAuth extends OAuthApi {
   IRMAuth(String identifier, String clientId, String clientSecret,
@@ -39,36 +40,24 @@ class Token {
   final num expires_In;
   final String authCode;
 
-  Token(this.access_token, this.token_type, this.expires_In,this.authCode);
+  Token(this.access_token, this.token_type, this.expires_In, this.authCode);
 
   Token.fromMap(Map<String, dynamic> json)
       : access_token = json['access_token'],
         token_type = json['token_type'],
         expires_In = json['expires_in'],
         authCode = json['authcode'];
-
-
-
-
-
-
-  }
-
+}
 
 class User_Info {
-
   final String client_id;
   final String username;
 
-  User_Info( this.username, this.client_id);
+  User_Info(this.username, this.client_id);
   User_Info.fromMap(Map<String, dynamic> json)
-      :
-
-        client_id = json["client_id"],
+      : client_id = json["client_id"],
         username = json["username"];
 }
-
-
 
 Future<Stream<String>> server() async {
   final StreamController<String> onCode = new StreamController();
@@ -87,14 +76,14 @@ Future<Stream<String>> server() async {
   return onCode.stream;
 }
 
-Future<User_Info> getUserInfo() async{ //getuserinfo
+Future<User_Info> getUserInfo() async {
+  //getuserinfo
 
   final http.Response userinforesponse = await http.post(
     "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
     headers: {
       'Accept': 'application/json',
-      'Authorization':
-      'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
+      'Authorization': 'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
       'Host': 'front-vl-dev.irm.kr',
       'Content-Type': 'application/x-www-form-urlencoded'
     },
@@ -102,23 +91,21 @@ Future<User_Info> getUserInfo() async{ //getuserinfo
   ).then((userinforesponse) {
     var temp_userinfo = json.decode(userinforesponse.body);
 
-
-    userinfo = User_Info(
-         temp_userinfo['client_id'], temp_userinfo['username']);
+    userinfo = User_Info(temp_userinfo['client_id'], temp_userinfo['username']);
 
     print(userinfo.client_id);
     print(userinfo.username);
-  }
-
-  );
+  });
 
   return null;
 }
 
+Future<Null> logout() async {
+  //for logout
 
-Future<Null> logout() async { //for logout
+  token = Token("", "", 0, "");
+}
 
-  token = Token("", "", 0,"");
-
-
+void getGroupinfo() async {
+  patient_group = await getGroupSearchBelonged();
 }
