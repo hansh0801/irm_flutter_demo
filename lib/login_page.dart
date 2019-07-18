@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:simple_auth/simple_auth.dart' as simpleAuth;
-import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import "package:http/http.dart" as http;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-
-import 'home_page.dart';
-
 import 'irm_auth.dart';
 
 class MainLoginPage extends StatefulWidget {
