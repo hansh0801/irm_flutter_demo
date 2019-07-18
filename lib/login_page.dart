@@ -11,7 +11,6 @@ import 'home_page.dart';
 
 import 'irm_auth.dart';
 
-
 class MainLoginPage extends StatefulWidget {
   @override
   _MainLoginPageState createState() => _MainLoginPageState();
@@ -32,17 +31,19 @@ class _MainLoginPageState extends State<MainLoginPage> {
   }
 }
 
-final IRMAuth irmApi = new IRMAuth("FRONT-VL Dev04", "front-vl-dev04",
-    "front-vl-dev04-secret", "http://localhost:8080"); // for Oauth api information
+final IRMAuth irmApi = new IRMAuth(
+    "FRONT-VL Dev04",
+    "front-vl-dev04",
+    "front-vl-dev04-secret",
+    "http://localhost:8080"); // for Oauth api information
 
 class LoginPage extends StatefulWidget {
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-   //GlobalObjectKey<ScaffoldState> _scaffoldKey;
+  //GlobalObjectKey<ScaffoldState> _scaffoldKey;
   @override
   /*initState(){
     super.initState();
@@ -51,11 +52,8 @@ class _LoginPageState extends State<LoginPage> {
 
   }*/
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-
-     // key: _scaffoldKey,
+      // key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       //appBar: new AppBar(title: new Text("IRM Test app")),
       body: Center(
@@ -69,24 +67,26 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<Null> login() async { //login
+  Future<Null> login() async {
+    //login
     await getToken();
     await getUserInfo();
+    await getGroupinfo();
 
     print(token.access_token);
     // getUserInfo();
 
-    Navigator.pushNamed(context, 'home_page',);
-
-
-
-
+    Navigator.pushNamed(
+      context,
+      'home_page',
+    );
 
     //print(token);
     //print(userinfo);
   }
 
-  List<Widget> buildSubmitButtons() { //buildsubmitbuttons
+  List<Widget> buildSubmitButtons() {
+    //buildsubmitbuttons
     return [
       Image.asset(
         "images/irm_logo.png",
@@ -110,11 +110,11 @@ class _LoginPageState extends State<LoginPage> {
       SizedBox(
         height: 5.0,
       ),
-
     ];
   }
 
-  Future<Token> getToken() async { //gettoken
+  Future<Token> getToken() async {
+    //gettoken
     String url =
         'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken&state=xyz';
 
@@ -153,6 +153,6 @@ class _LoginPageState extends State<LoginPage> {
 
     print(token.token_type);
 
-   // return new Token.fromMap(json.decode(response.body));
+    // return new Token.fromMap(json.decode(response.body));
   }
 }

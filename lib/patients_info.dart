@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'japiRequest.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-
-var patient_group;
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
-List<String> Loaded_group;
-final TextEditingController _textEditingController= new TextEditingController();
+List<String> _Loaded_group = List<String>();
 
-void _handleSubmitted(String text) { _textEditingController.clear(); }
+final TextEditingController _textEditingController =
+    new TextEditingController();
 
-
-void getGroupinfo() async{
-  patient_group = await getGroupSearchBelonged();
-
+void _handleSubmitted(String text) {
+  _textEditingController.clear();
 }
-
 
 class Patients_Info extends StatefulWidget {
   @override
@@ -24,31 +20,23 @@ class Patients_Info extends StatefulWidget {
 }
 
 class _Patients_InfoState extends State<Patients_Info> {
-
-  void  initState()  {
-
-    getGroupinfo();
+  void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
     super.initState();
-
   }
- // [index]['vgroup_name']
+  // [index]['vgroup_name']
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
     int index = 0;
     String group;
-    for (;index<patient_group['records'].length;index++) {
+    for (; index < patient_group['records'].length; index++) {
       // here we are creating the drop down menu items, you can customize the item right here
       // but I'll just use a simple text for this
       group = patient_group['records'][index]['vgroup_name'];
-      items.add(new DropdownMenuItem(
-          value: group,
-          child: new Text(group)
-      ));
-      Loaded_group.add(group);
-
+      items.add(new DropdownMenuItem(value: group, child: new Text(group)));
+      _Loaded_group.add(group);
     }
     return items;
   }
@@ -64,13 +52,15 @@ class _Patients_InfoState extends State<Patients_Info> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: new AppBar(title: Text("patient test"),),
+      appBar: new AppBar(
+        title: Text("patient test"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(3.0),
         child: new Column(
             //crossAxisAlignment: CrossAxisAlignment.center,
-           // mainAxisAlignment: MainAxisAlignment.center,
-            children:[
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               new Container(
                 padding: new EdgeInsets.all(10.0),
               ),
@@ -78,15 +68,16 @@ class _Patients_InfoState extends State<Patients_Info> {
                 value: _currentGroup,
                 items: _dropDownMenuItems,
                 onChanged: changedDropDownItem,
-
               ),
               new Row(
                 children: <Widget>[
                   Flexible(
                     child: TextField(
                       controller: _textEditingController,
-                      onSubmitted:_handleSubmitted ,
-                      decoration: new InputDecoration.collapsed(hintText: "검색할 환자를 입력하세요",),
+                      onSubmitted: _handleSubmitted,
+                      decoration: new InputDecoration.collapsed(
+                        hintText: "검색할 환자를 입력하세요",
+                      ),
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.text,
                     ),
@@ -96,13 +87,12 @@ class _Patients_InfoState extends State<Patients_Info> {
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: IconButton(icon: Icon(Icons.send), onPressed: ()=>_handleSubmitted(_textEditingController.text)),
-
+                    child: IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: () =>
+                            _handleSubmitted(_textEditingController.text)),
                   )
-
                 ],
-
-
               ),
               Image.asset(
                 "images/irm_logo.png",
@@ -128,13 +118,14 @@ class _Patients_InfoState extends State<Patients_Info> {
                 height: 100,
                 //fit: BoxFit.cover,
               ),
-
-            ]
-
-          ),
-
+              Image.asset(
+                "images/irm_logo.png",
+                width: 300,
+                height: 100,
+                //fit: BoxFit.cover,
+              ),
+            ]),
       ),
-
     );
   }
 }
