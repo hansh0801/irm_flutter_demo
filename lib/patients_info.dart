@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'japiRequest.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'get_patient_data.dart';
 
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
-List<String> _Loaded_group = List<String>();
+List<Group> grouplist=[];
+
 
 final TextEditingController _textEditingController =
-    new TextEditingController();
+new TextEditingController();
 
 void _handleSubmitted(String text) {
   _textEditingController.clear();
@@ -21,7 +23,18 @@ class Patients_Info extends StatefulWidget {
 
 class _Patients_InfoState extends State<Patients_Info>  {
 
-  Future<List<Patientlist>> _getPatientList() async{
+  Future<List<Patientlist>> _getPatientList(currentgroupkey) async{
+
+    var jsondata = await getPatientList(_currentGroup);
+    List<Patientlist> PatientLists = [];
+    for (var u in jsondata){
+      Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
+      PatientLists.add(patientlist);
+    }
+
+    print(PatientLists.length);
+
+    return PatientLists;
 
 
 
@@ -30,30 +43,53 @@ class _Patients_InfoState extends State<Patients_Info>  {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomPadding: false,
 
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            title: Text("patient info"),
-            floating: true,
-            pinned: false,
-            snap: true,
-            expandedHeight: 200.0,
-            flexibleSpace: MyappBar(),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              title: Text("patient info"),
+              floating: true,
+              pinned: false,
+              snap: true,
+              expandedHeight: 200.0,
+              flexibleSpace: MyappBar(),
 
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(<Widget>[
+            ),
+            SliverFillRemaining(
+              child: FutureBuilder(
+                  future:_getPatientList(grouplist),
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    if(snapshot.data ==null){
+                      return Container(
+                        child: Center(
+                          child: Text("loading"),
+                        ),
+                      );
 
-            ]),
+                    }
+                    else{
+                    return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index){
 
-          )
-        ],
+                          return ListTile(
+
+                            title: Text(snapshot.data[index].patient_id_value),
+                          );
+
+
+                        });
+
+
+                  }}),
+
+            )
+          ],
 
 
 
-    )
+        )
     );
   }
 }
@@ -76,14 +112,21 @@ class _MyappBarState extends State<MyappBar> {
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
-    int index = 0;
-    String group;
+    int index;
+    index = 0;
+    Group group;
+
+
     for (; index < patient_group['records'].length; index++) {
       // here we are creating the drop down menu items, you can customize the item right here
       // but I'll just use a simple text for this
-      group = patient_group['records'][index]['vgroup_name'];
-      items.add(new DropdownMenuItem(value: group, child: new Text(group)));
-      _Loaded_group.add(group);
+      group = Group(patient_group['records'][index]['vgroup_key'],patient_group['records'][index]['vgroup_name']);
+      print(group.vgroup_name);
+      print(group.vgroup_key);
+
+      items.add(new DropdownMenuItem(value: group.vgroup_name, child: new Text(group.vgroup_name)));
+      grouplist.add(group);
+
     }
     return items;
   }
@@ -100,8 +143,8 @@ class _MyappBarState extends State<MyappBar> {
   Widget build(BuildContext context) {
     return Container(
       child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-         mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             new Container(
               padding: new EdgeInsets.all(10.0),
@@ -127,7 +170,7 @@ class _MyappBarState extends State<MyappBar> {
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.text,
                   ),
-                  
+
                 ),
                 Container(
                   padding: new EdgeInsets.all(8.0),
@@ -170,12 +213,19 @@ class Patientlist{
 
 
   Patientlist(this.vgroup_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
-  this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
+      this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
 
 
 
 }
 
+class Group{
+  final int vgroup_key;
+  final String vgroup_name;
+
+  Group(this.vgroup_key,this.vgroup_name);
+
+}
 
 
 
