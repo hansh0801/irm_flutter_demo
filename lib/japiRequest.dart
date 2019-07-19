@@ -7,10 +7,9 @@ import 'irm_auth.dart';
 final String serverUrl = 'https://xdsserver-dev.irm.kr/XDSServer/api';
 final String url = 'xdsserver-dev.irm.kr';
 
+
 ///json 형태로 리턴
-
 Future getGroupSearchBelonged() async {
-
   var uri = Uri.http(
       url, '/XDSServer/api/vgroup_belonged.w2ui'); //, queryParameters);
   var ret;
@@ -30,7 +29,7 @@ Future getGroupSearchBelonged() async {
 ///    "vgroup_key_list" : "{30614,35729,26886,30700,31670}",
 ///    "patient_name" : "john",
 ///    "include_last_activity_dttm" : "true"
-Future getPatientSearch(queryParameters) async {
+Future<Map> getPatientSearch(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient', queryParameters);
   var ret;
   http.Response resp = await http.get(
@@ -62,10 +61,10 @@ Future postPatientCreate(queryParameters) async {
   http.Response resp = await http.post(uri, headers: {
     'Accept': 'text/html',
     'Authorization': 'Bearer ${token.access_token}',
-  }, body: {
+  }, body:
     queryParameters,
   // ignore: missing_return
-  }).then((response) {
+  ).then((response) {
     ret = utf8.decode(response.bodyBytes);
   });
 
@@ -88,10 +87,10 @@ Future putPatientUpdate(queryParameters) async {
   http.Response resp = await http.put(uri, headers: {
     'Accept': 'text/html',
     'Authorization': 'Bearer ${token.access_token}',
-  // ignore: missing_return
-  }, body: {
+  }, body:
     queryParameters,
-  }).then((response) {
+  // ignore: missing_return
+  ).then((response) {
     ret = utf8.decode(response.bodyBytes);
   });
   return json.decode(ret);
@@ -132,10 +131,10 @@ Future putPatientSetPhoto(queryParameters) async {
     'Accept': 'text/html',
     'Authorization': 'Bearer ${token.access_token}',
   },
-  body:{
-    queryParameters,
+  body:
+    queryParameters
   // ignore: missing_return
-  }).then((response) {
+  ).then((response) {
     ret = utf8.decode(response.bodyBytes);
   });
 
@@ -161,7 +160,7 @@ Future getPatientGetPhoto(queryParameters) async {
   ret = json.decode(ret);
   ret['patient_photo'] = ret['patient_photo'].toString().replaceAll('\/', '/').replaceAll('\n', '');
 
-  return json.decode(ret);
+  return ret;
 }
 
 /// 환자 사진 삭제

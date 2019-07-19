@@ -1,6 +1,6 @@
 import 'japiRequest.dart';
 import 'dart:convert';
-import 'irm_auth.dart';
+import 'dart:typed_data';
 
 ///인자로 받은 그룹의 환자 정보 리스트를 반환
 ///input: group_id
@@ -27,29 +27,59 @@ Future<List> getGroupNameList() async{
   return groupList;
 }
 
+
+
 ///인자로 받은 그룹의 환자 이름 리스트를 반환
 ///input: group_id
 ///output: list of patients' name in group
 Future<List> getPatientNameList(group_id) async{
-  List patientGroup = await getPatientList(group_id);
-  List<String> patientName = [];
-  for(var name in patientGroup)
+  var queryParameters = {
+    'vgroup_key_list' : '{$group_id}',
+  };
+  var jsonData = await getPatientSearch(queryParameters);
+  List patientList = jsonData['patient_list'];
+  List patientName = [];
+
+  for(var name in patientList){
     patientName.add(name['patient_name']);
+  }
 
   return patientName;
 }
 
-///그룹 내 환자 이름 검색
+///그룹 내 환자 이름 검색, 환자 정보 리스트 반환
 ///input: group_id, patient_name
-///output: list of patients'name
+///output: list of patients' key
 Future<List> searchPatientName(group_id, patient_name) async {
-  List<String> result = [];
-  List<String> patientList = await getPatientNameList(group_id);
-
-  for(String name in patientList){
-    if(name.contains(patient_name))
-      result.add(name);
-  }
+  List result = [];
+  var queryParameters = {
+    'vgroup_key_list' : '{$group_id}',
+    'patient_name' : '$patient_name'
+  };
+  Map patientList = await getPatientSearch(queryParameters);
+  result = patientList['patient_list'];
 
   return result;
 }
+
+///환자 사진 정보 Image로 반환
+///input: patient_key
+///output: Image data(not base 64)
+Future<Uint8List> getPatientPhoto(patient_key) async {
+  var queryParameters = {
+    'patient_key': '$patient_key',
+    'photo_tag': 'main',
+  };
+  var jsonData = await getPatientGetPhoto(queryParameters);
+  String encoded = jsonData['patient_photo'];
+  Uint8List bytes = base64.decode(encoded);
+
+  return bytes;
+}
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+///환자 사진 정보 등록
+///
+///
