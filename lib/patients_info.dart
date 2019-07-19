@@ -3,10 +3,12 @@ import 'irm_auth.dart';
 import 'japiRequest.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'get_patient_data.dart';
-
+import 'dart:convert';
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<Group> grouplist=[];
+var currentgroupkey = null;
+
 
 
 final TextEditingController _textEditingController =
@@ -16,6 +18,34 @@ void _handleSubmitted(String text) {
   _textEditingController.clear();
 }
 
+
+
+Future<List<Patientlist>> _getPatientList() async{
+
+
+  var jsondata = await getPatientList(26906);
+
+  print("start $jsondata");
+  List<Patientlist> PatientLists = [];
+  for (var u in jsondata){
+
+    Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
+
+    print(patientlist.vgroup_key);
+
+    PatientLists.add(patientlist);
+
+  }
+
+
+  print(PatientLists.length);
+
+  return PatientLists;
+
+
+
+}
+
 class Patients_Info extends StatefulWidget {
   @override
   _Patients_InfoState createState() => _Patients_InfoState();
@@ -23,26 +53,11 @@ class Patients_Info extends StatefulWidget {
 
 class _Patients_InfoState extends State<Patients_Info>  {
 
-  Future<List<Patientlist>> _getPatientList(currentgroupkey) async{
-
-    var jsondata = await getPatientList(_currentGroup);
-    List<Patientlist> PatientLists = [];
-    for (var u in jsondata){
-      Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
-      PatientLists.add(patientlist);
-    }
-
-    print(PatientLists.length);
-
-    return PatientLists;
-
-
-
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
         resizeToAvoidBottomPadding: false,
 
         body: CustomScrollView(
@@ -57,8 +72,10 @@ class _Patients_InfoState extends State<Patients_Info>  {
 
             ),
             SliverFillRemaining(
+
               child: FutureBuilder(
-                  future:_getPatientList(grouplist),
+
+                  future:_getPatientList(),
                   builder: (BuildContext context, AsyncSnapshot snapshot){
                     if(snapshot.data ==null){
                       return Container(
@@ -75,7 +92,7 @@ class _Patients_InfoState extends State<Patients_Info>  {
 
                           return ListTile(
 
-                            title: Text(snapshot.data[index].patient_id_value),
+                            title: Text(snapshot.data[index].patient_name),
                           );
 
 
@@ -95,6 +112,7 @@ class _Patients_InfoState extends State<Patients_Info>  {
 }
 
 
+
 class MyappBar extends StatefulWidget {
   @override
   const MyappBar();
@@ -106,6 +124,7 @@ class _MyappBarState extends State<MyappBar> {
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
+    currentgroupkey = [0,""];
     super.initState();
   }
 
@@ -126,8 +145,12 @@ class _MyappBarState extends State<MyappBar> {
 
       items.add(new DropdownMenuItem(value: group.vgroup_name, child: new Text(group.vgroup_name)));
       grouplist.add(group);
+      //print(group);
+     // print(grouplist);
 
     }
+
+
     return items;
   }
 
@@ -135,6 +158,9 @@ class _MyappBarState extends State<MyappBar> {
     print("Selected city $selectedGroup, we are going to refresh the UI");
     setState(() {
       _currentGroup = selectedGroup;
+      currentgroupkey = grouplist.firstWhere(((user) =>user.vgroup_name ==_currentGroup));
+      print(currentgroupkey.vgroup_key);
+
     });
   }
 
@@ -202,7 +228,7 @@ class _MyappBarState extends State<MyappBar> {
 
 
 class Patientlist{
-  final String vgroup_key;
+  final int vgroup_key;
   final String patient_id_value;
   final String patient_name;
   final String patient_sex;
@@ -224,6 +250,8 @@ class Group{
   final String vgroup_name;
 
   Group(this.vgroup_key,this.vgroup_name);
+  @override
+  String toString() => "vgroup_key is $vgroup_key , vgroup name os $vgroup_name ";
 
 }
 
