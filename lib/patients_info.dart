@@ -9,39 +9,30 @@ List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<Group> grouplist=[];
 Group currentgroupkey = Group(38061, "Test");
-
-
+List<Patientlist> allPatientList = [];
+List<Patientlist> searchPatientList = [];
+bool notSearched = true;
 
 final TextEditingController _textEditingController =
 new TextEditingController();
 
-
-
-
 Future<List<Patientlist>> _getPatientList(int currentgroupkey) async{
-
-
   var jsondata = await getPatientList(currentgroupkey);
 
   print("start $jsondata");
   List<Patientlist> PatientLists = [];
-  for (var u in jsondata){
-
-    Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
-
-    print(patientlist.vgroup_key);
-
+  for (var u in jsondata) {
+    var photoData = await getPatientPhoto(u['patient_key']);
+    Patientlist patientlist = Patientlist(
+        u["vgroup_key"], u['patient_key'], u['patient_id_value'], u['patient_name'], u['patient_sex'],
+        u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone'], photoData);
+    print(patientlist.patient_key);
     PatientLists.add(patientlist);
-
   }
 
-
+  notSearched = true;
   print(PatientLists.length);
-
   return PatientLists;
-
-
-
 }
 
 class Patients_Info extends StatefulWidget {
@@ -55,10 +46,8 @@ class _Patients_InfoState extends State<Patients_Info>  {
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
-
     super.initState();
   }
-
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
@@ -66,10 +55,7 @@ class _Patients_InfoState extends State<Patients_Info>  {
     index = 0;
     Group group;
 
-
     for (; index < patient_group['records'].length; index++) {
-      // here we are creating the drop down menu items, you can customize the item right here
-      // but I'll just use a simple text for this
       group = Group(patient_group['records'][index]['vgroup_key'],patient_group['records'][index]['vgroup_name']);
       print(group.vgroup_name);
       print(group.vgroup_key);
@@ -78,9 +64,7 @@ class _Patients_InfoState extends State<Patients_Info>  {
       grouplist.add(group);
       //print(group);
       // print(grouplist);
-
     }
-
 
     return items;
   }
@@ -91,32 +75,22 @@ class _Patients_InfoState extends State<Patients_Info>  {
       _currentGroup = selectedGroup;
       currentgroupkey = grouplist.firstWhere(((user) =>user.vgroup_name ==_currentGroup));
       print(currentgroupkey.vgroup_key);
-
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
         resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
           title: Text("Patient info"),
         ),
-
         body: Container(
-
           child:MyappBar(),
-
         )
     );
   }
 }
-
-
 
 class MyappBar extends StatefulWidget {
   @override
@@ -125,14 +99,11 @@ class MyappBar extends StatefulWidget {
 }
 
 class _MyappBarState extends State<MyappBar> {
-
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
-
     super.initState();
   }
-
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
@@ -140,11 +111,10 @@ class _MyappBarState extends State<MyappBar> {
     index = 0;
     Group group;
 
-
     for (; index < patient_group['records'].length; index++) {
-      // here we are creating the drop down menu items, you can customize the item right here
-      // but I'll just use a simple text for this
-      group = Group(patient_group['records'][index]['vgroup_key'],patient_group['records'][index]['vgroup_name']);
+
+      group = Group(patient_group['records'][index]['vgroup_key'],
+          patient_group['records'][index]['vgroup_name']);
       print(group.vgroup_name);
       print(group.vgroup_key);
 
@@ -152,9 +122,7 @@ class _MyappBarState extends State<MyappBar> {
       grouplist.add(group);
       //print(group);
      // print(grouplist);
-
     }
-
 
     return items;
   }
@@ -165,18 +133,20 @@ class _MyappBarState extends State<MyappBar> {
       _currentGroup = selectedGroup;
       currentgroupkey = grouplist.firstWhere(((user) =>user.vgroup_name ==_currentGroup));
       print(currentgroupkey.vgroup_key);
-
     });
   }
 
   void _handleSubmitted(String text) {
-    _textEditingController.clear();
     setState(() {
-
+      searchPatientList.clear();
+      notSearched = false;
+      for(var i = 0; i < allPatientList.length; i++){
+        if(allPatientList[i].patient_name.contains(text)){
+          searchPatientList.add(allPatientList[i]);
+        }
+      }
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +169,6 @@ class _MyappBarState extends State<MyappBar> {
                   height: 20.0,
                 ),
                 Flexible(
-
                   child: TextField(
                     controller: _textEditingController,
                     onSubmitted: _handleSubmitted,
@@ -209,7 +178,6 @@ class _MyappBarState extends State<MyappBar> {
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.text,
                   ),
-
                 ),
                 Container(
                   padding: new EdgeInsets.all(8.0),
@@ -223,90 +191,95 @@ class _MyappBarState extends State<MyappBar> {
                       icon: Icon(Icons.send),
                       onPressed: () =>
                           _handleSubmitted(_textEditingController.text)),
-                )
-                ,
-
-
-
-
+                ),
               ],
             ),
             Expanded(
               child: SizedBox(
                 height: 200.0,
                   child: FutureBuilder(
-
-
                       future:_getPatientList(currentgroupkey.vgroup_key),
                       builder: (BuildContext context, AsyncSnapshot snapshot){
+                        allPatientList = snapshot.data;
+
                         if(snapshot.data ==null){
                           return Container(
                             child: Center(
                               child: Text("loading"),
                             ),
                           );
-
                         }
                         else{
-                          return
-                            ListView.builder(
-
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (BuildContext context, int index){
-
-                                  return
-                                  Card(
-                                    elevation: 8.0,
-                                    margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(color:Colors.white),
-                                      child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                                        leading: Container(
-                                          padding: EdgeInsets.only(right: 15.0),
-                                          decoration: new BoxDecoration(
-                                              border: new Border(
-                                                  right: new BorderSide(width: 1.0, color: Colors.black26))),
-                                          child: Image.network(
-                                          "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+                          if(notSearched){
+                            return
+                              ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (BuildContext context, int index){
+                                    return
+                                      Card(
+                                        elevation: 8.0,
+                                        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(color:Colors.white),
+                                          child: ListTile(
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                            leading: Container(
+                                              padding: EdgeInsets.only(right: 15.0),
+                                              decoration: new BoxDecoration(
+                                                  border: new Border(
+                                                      right: new BorderSide(width: 1.0, color: Colors.black26))),
+                                              child: Image.memory(snapshot.data[index].patient_photo),
+                                            ),
+                                            title: Text(snapshot.data[index].patient_name.toString()),
+                                            subtitle: Text(snapshot.data[index].patient_sex.toString()),
+                                            trailing:
+                                            Icon(Icons.keyboard_arrow_right, color: Colors.black26, size: 30.0),
+                                            onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
+                                          ),
                                         ),
-
-                                        title: Text(snapshot.data[index].patient_name.toString()),
-                                        subtitle: Text(snapshot.data[index].patient_sex.toString()),
+                                      );
+                                  });
+                          }
+                          else{
+                            return ListView.builder(
+                                itemCount: searchPatientList.length,
+                                itemBuilder: (BuildContext context, int index){
+                                  return
+                                    Card(
+                                      elevation: 8.0,
+                                      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(color:Colors.white),
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                          leading: Container(
+                                            padding: EdgeInsets.only(right: 15.0),
+                                            decoration: new BoxDecoration(
+                                                border: new Border(
+                                                    right: new BorderSide(width: 1.0, color: Colors.black26))),
+                                            //child: Image.memory(snapshot.data[index].patient_photo),
+                                          ),
+                                          title: Text(searchPatientList[index].patient_name.toString()),
+                                          subtitle: Text(searchPatientList[index].patient_sex.toString()),
                                           trailing:
                                           Icon(Icons.keyboard_arrow_right, color: Colors.black26, size: 30.0),
-                                        onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
-
+                                          onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
+                                        ),
                                       ),
-                                    ),
-                                  );
-
-
-
-
+                                    );
                                 });
-
-
+                          }
                         }}),
               ),
-
             )
-
           ]),
-
-
-
     );
   }
 }
 
-
-
-
-
-
 class Patientlist{
   final int vgroup_key;
+  final int patient_key;
   final String patient_id_value;
   final String patient_name;
   final String patient_sex;
@@ -314,13 +287,10 @@ class Patientlist{
   final String patient_phone;
   final String patient_address;
   final String patient_guardian;
+  final patient_photo;
 
-
-  Patientlist(this.vgroup_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
-      this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
-
-
-
+  Patientlist(this.vgroup_key, this.patient_key, this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
+      this.patient_birth_dttm,this.patient_guardian,this.patient_phone, this.patient_photo);
 }
 
 class Group{
@@ -330,9 +300,7 @@ class Group{
   Group(this.vgroup_key,this.vgroup_name);
   @override
   String toString() => "vgroup_key is $vgroup_key , vgroup name os $vgroup_name ";
-
 }
-
 
 
 ///    "vgroup_key" : "30614",
