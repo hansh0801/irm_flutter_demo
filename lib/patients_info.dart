@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'japiRequest.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'get_patient_data.dart';
-import 'dart:convert';
+import 'patients_info_detailpage.dart';
+
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<Group> grouplist=[];
-var currentgroupkey = null;
+Group currentgroupkey = Group(38061, "Test");
 
 
 
 final TextEditingController _textEditingController =
 new TextEditingController();
 
-void _handleSubmitted(String text) {
-  _textEditingController.clear();
-}
 
 
 
-Future<List<Patientlist>> _getPatientList() async{
+Future<List<Patientlist>> _getPatientList(int currentgroupkey) async{
 
 
-  var jsondata = await getPatientList(26906);
+  var jsondata = await getPatientList(currentgroupkey);
 
   print("start $jsondata");
   List<Patientlist> PatientLists = [];
@@ -52,59 +50,66 @@ class Patients_Info extends StatefulWidget {
 }
 
 class _Patients_InfoState extends State<Patients_Info>  {
+  ValueNotifier<String> valueNotifier = new ValueNotifier(_currentGroup);
+
+  void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentGroup = _dropDownMenuItems[0].value;
+
+    super.initState();
+  }
+
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = new List();
+    int index;
+    index = 0;
+    Group group;
+
+
+    for (; index < patient_group['records'].length; index++) {
+      // here we are creating the drop down menu items, you can customize the item right here
+      // but I'll just use a simple text for this
+      group = Group(patient_group['records'][index]['vgroup_key'],patient_group['records'][index]['vgroup_name']);
+      print(group.vgroup_name);
+      print(group.vgroup_key);
+
+      items.add(new DropdownMenuItem(value: group.vgroup_name, child: new Text(group.vgroup_name)));
+      grouplist.add(group);
+      //print(group);
+      // print(grouplist);
+
+    }
+
+
+    return items;
+  }
+
+  void changedDropDownItem(String selectedGroup) {
+    print("Selected city $selectedGroup, we are going to refresh the UI");
+    setState(() {
+      _currentGroup = selectedGroup;
+      currentgroupkey = grouplist.firstWhere(((user) =>user.vgroup_name ==_currentGroup));
+      print(currentgroupkey.vgroup_key);
+
+    });
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
         resizeToAvoidBottomPadding: false,
+        appBar: new AppBar(
+          title: Text("Patient info"),
+        ),
 
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              title: Text("patient info"),
-              floating: true,
-              pinned: false,
-              snap: true,
-              expandedHeight: 200.0,
-              flexibleSpace: MyappBar(),
+        body: Container(
 
-            ),
-            SliverFillRemaining(
-
-              child: FutureBuilder(
-
-                  future:_getPatientList(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    if(snapshot.data ==null){
-                      return Container(
-                        child: Center(
-                          child: Text("loading"),
-                        ),
-                      );
-
-                    }
-                    else{
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index){
-
-                          return ListTile(
-
-                            title: Text(snapshot.data[index].patient_name),
-                          );
-
-
-                        });
-
-
-                  }}),
-
-            )
-          ],
-
-
+          child:MyappBar(),
 
         )
     );
@@ -124,7 +129,7 @@ class _MyappBarState extends State<MyappBar> {
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
-    currentgroupkey = [0,""];
+
     super.initState();
   }
 
@@ -164,13 +169,21 @@ class _MyappBarState extends State<MyappBar> {
     });
   }
 
+  void _handleSubmitted(String text) {
+    _textEditingController.clear();
+    setState(() {
+
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             new Container(
               padding: new EdgeInsets.all(10.0),
@@ -211,8 +224,73 @@ class _MyappBarState extends State<MyappBar> {
                       onPressed: () =>
                           _handleSubmitted(_textEditingController.text)),
                 )
+                ,
+
+
+
+
               ],
             ),
+            Expanded(
+              child: SizedBox(
+                height: 200.0,
+                  child: FutureBuilder(
+
+
+                      future:_getPatientList(currentgroupkey.vgroup_key),
+                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                        if(snapshot.data ==null){
+                          return Container(
+                            child: Center(
+                              child: Text("loading"),
+                            ),
+                          );
+
+                        }
+                        else{
+                          return
+                            ListView.builder(
+
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (BuildContext context, int index){
+
+                                  return
+                                  Card(
+                                    elevation: 8.0,
+                                    margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(color:Colors.white),
+                                      child: ListTile(
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                        leading: Container(
+                                          padding: EdgeInsets.only(right: 15.0),
+                                          decoration: new BoxDecoration(
+                                              border: new Border(
+                                                  right: new BorderSide(width: 1.0, color: Colors.black26))),
+                                          child: Image.network(
+                                          "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+                                        ),
+
+                                        title: Text(snapshot.data[index].patient_name.toString()),
+                                        subtitle: Text(snapshot.data[index].patient_sex.toString()),
+                                          trailing:
+                                          Icon(Icons.keyboard_arrow_right, color: Colors.black26, size: 30.0),
+                                        onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
+
+                                      ),
+                                    ),
+                                  );
+
+
+
+
+                                });
+
+
+                        }}),
+              ),
+
+            )
 
           ]),
 
