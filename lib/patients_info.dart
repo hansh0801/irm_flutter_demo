@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'japiRequest.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'get_patient_data.dart';
-import 'dart:convert';
+import 'patients_info_detailpage.dart';
+
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<Group> grouplist=[];
@@ -14,9 +15,6 @@ Group currentgroupkey = Group(38061, "Test");
 final TextEditingController _textEditingController =
 new TextEditingController();
 
-void _handleSubmitted(String text) {
-  _textEditingController.clear();
-}
 
 
 
@@ -171,6 +169,14 @@ class _MyappBarState extends State<MyappBar> {
     });
   }
 
+  void _handleSubmitted(String text) {
+    _textEditingController.clear();
+    setState(() {
+
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -249,11 +255,33 @@ class _MyappBarState extends State<MyappBar> {
                                 itemBuilder: (BuildContext context, int index){
 
                                   return
+                                  Card(
+                                    elevation: 8.0,
+                                    margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(color:Colors.white),
+                                      child: ListTile(
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                        leading: Container(
+                                          padding: EdgeInsets.only(right: 15.0),
+                                          decoration: new BoxDecoration(
+                                              border: new Border(
+                                                  right: new BorderSide(width: 1.0, color: Colors.black26))),
+                                          child: Image.network(
+                                          "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+                                        ),
 
-                                    ListTile(
+                                        title: Text(snapshot.data[index].patient_name.toString()),
+                                        subtitle: Text(snapshot.data[index].patient_sex.toString()),
+                                          trailing:
+                                          Icon(Icons.keyboard_arrow_right, color: Colors.black26, size: 30.0),
+                                        onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
 
-                                      title: Text(snapshot.data[index].patient_id_value.toString()),
-                                    );
+                                      ),
+                                    ),
+                                  );
+
+
 
 
                                 });
