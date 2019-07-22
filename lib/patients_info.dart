@@ -275,7 +275,7 @@ class _MyappBarState extends State<MyappBar> {
                                         subtitle: Text(snapshot.data[index].patient_sex.toString()),
                                           trailing:
                                           Icon(Icons.keyboard_arrow_right, color: Colors.black26, size: 30.0),
-                                        onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage())),
+                                        onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(patientinfo:snapshot.data[index]))),
 
                                       ),
                                     ),
@@ -335,11 +335,11 @@ class Group{
 
 
 
-///    "vgroup_key" : "30614",
-///    "patient_id_value" : "P123",
-///    "patient_name" : "PATIENT^NAME",
-///    "patient_sex" : "M",
-///    "patient_birth_dttm" : "2015-07-22T03:35:14",
+///   4 "vgroup_key" : "30614",
+///   3 "patient_id_value" : "P123",
+///    1"patient_name" : "PATIENT^NAME",
+///   2 "patient_sex" : "M",
+///    5"patient_birth_dttm" : "2015-07-22T03:35:14",
 ///    "patient_phone" : "010-1234-5678",
 ///    "patient_address" : "somewhere",
 ///    "patient_guardian" : "God" 

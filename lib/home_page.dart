@@ -18,6 +18,7 @@ class _Home_PageState extends State<Home_Page> {
         elevation: 14.0,
         shadowColor: Color(0x802196F3),
         borderRadius: BorderRadius.circular(24.0),
+
         child: Center(
           child: InkWell(
             onTap: () {
@@ -88,20 +89,7 @@ class _Home_PageState extends State<Home_Page> {
                   })
             ],
           ),
-          drawer: new Drawer(
-            child: ListView(
-              children: <Widget>[
-                new UserAccountsDrawerHeader(
-                  accountName: new Text(userinfo.username),
-                  accountEmail: new Text(userinfo.client_id),
-                  currentAccountPicture: new CircleAvatar(
-                    backgroundImage: new NetworkImage(
-                        "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
-                  ),
-                )
-              ],
-            ),
-          ),
+          drawer: HomePageDrawer(),
           body: new Container(
               child: StaggeredGridView.count(
             crossAxisCount: 2,
@@ -110,9 +98,12 @@ class _Home_PageState extends State<Home_Page> {
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             children: <Widget>[
               myItems(Icons.people, "patients", 0xffed622b, 'patients_info'),
-              myItems(Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
-              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6, 'make_form'),
-              myItems(Icons.timeline, "medical record", 0xff702670, 'medical_record'),
+              myItems(
+                  Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
+              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6,
+                  'make_form'),
+              myItems(Icons.timeline, "medical record", 0xff702670,
+                  'medical_record'),
             ],
             staggeredTiles: [
               StaggeredTile.extent(2, 150.0),
@@ -124,5 +115,44 @@ class _Home_PageState extends State<Home_Page> {
         ),
       );
     }
+  }
+}
+
+class HomePageDrawer extends StatefulWidget {
+  @override
+  _HomePageDrawerState createState() => _HomePageDrawerState();
+}
+
+class _HomePageDrawerState extends State<HomePageDrawer> {
+  @override
+  Widget build(BuildContext context) {
+    return new Drawer(
+      child: ListView(
+        children: <Widget>[
+          new UserAccountsDrawerHeader(
+            accountName: new Text(userinfo.username),
+            accountEmail: new Text(userinfo.client_id),
+            currentAccountPicture: new CircleAvatar(
+              backgroundImage: new NetworkImage(
+                  "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+            ),
+          ),
+          new ListTile(
+            title: new Text("My Info"),
+            trailing: new Icon(Icons.arrow_upward),
+          ),
+          new ListTile(
+            title: new Text("Settings"),
+            trailing: new Icon(Icons.arrow_downward),
+          ),
+          new Divider(),
+          new ListTile(
+            title: new Text("close"),
+            trailing: new Icon(Icons.close),
+            onTap: ()=>Navigator.of(context).pop(),
+          )
+        ],
+      ),
+    );
   }
 }
