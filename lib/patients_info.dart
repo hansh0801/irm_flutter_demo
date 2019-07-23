@@ -18,7 +18,7 @@ new TextEditingController();
 
 
 
-Future<List<Patientlist>> _getPatientList(int currentgroupkey) async{
+Stream<List<Patientlist>> _getPatientList(int currentgroupkey) async*{
 
 
   var jsondata = await getPatientList(currentgroupkey);
@@ -27,7 +27,7 @@ Future<List<Patientlist>> _getPatientList(int currentgroupkey) async{
   List<Patientlist> PatientLists = [];
   for (var u in jsondata){
 
-    Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
+    Patientlist patientlist = Patientlist(u["vgroup_key"], u['patient_key'], u['patient_id_value'], u['patient_name'], u['patient_sex'],u['patient_address'] ,u['patient_birth_dttm'] ,u['patient_guardian'] , u['patient_phone']);
 
     print(patientlist.vgroup_key);
 
@@ -38,7 +38,7 @@ Future<List<Patientlist>> _getPatientList(int currentgroupkey) async{
 
   print(PatientLists.length);
 
-  return PatientLists;
+  yield PatientLists;
 
 
 
@@ -234,10 +234,10 @@ class _MyappBarState extends State<MyappBar> {
             Expanded(
               child: SizedBox(
                 height: 200.0,
-                  child: FutureBuilder(
+                  child: StreamBuilder(
 
 
-                      future:_getPatientList(currentgroupkey.vgroup_key),
+                      stream:_getPatientList(currentgroupkey.vgroup_key),
                       builder: (BuildContext context, AsyncSnapshot snapshot){
                         if(snapshot.data ==null){
                           return Container(
@@ -307,6 +307,7 @@ class _MyappBarState extends State<MyappBar> {
 
 class Patientlist{
   final int vgroup_key;
+  final int patient_key;
   final String patient_id_value;
   final String patient_name;
   final String patient_sex;
@@ -316,7 +317,7 @@ class Patientlist{
   final String patient_guardian;
 
 
-  Patientlist(this.vgroup_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
+  Patientlist(this.vgroup_key,this.patient_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
       this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
 
 
