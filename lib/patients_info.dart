@@ -4,11 +4,12 @@ import 'japiRequest.dart';
 
 import 'get_patient_data.dart';
 import 'patients_info_detailpage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 List<Group> grouplist=[];
-Group currentgroupkey = Group(38061, "Test");
+
 
 
 
@@ -50,51 +51,6 @@ class Patients_Info extends StatefulWidget {
 }
 
 class _Patients_InfoState extends State<Patients_Info>  {
-  ValueNotifier<String> valueNotifier = new ValueNotifier(_currentGroup);
-
-  void initState() {
-    _dropDownMenuItems = getDropDownMenuItems();
-    _currentGroup = _dropDownMenuItems[0].value;
-
-    super.initState();
-  }
-
-
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
-    int index;
-    index = 0;
-    Group group;
-
-
-    for (; index < patient_group['records'].length; index++) {
-      // here we are creating the drop down menu items, you can customize the item right here
-      // but I'll just use a simple text for this
-      group = Group(patient_group['records'][index]['vgroup_key'],patient_group['records'][index]['vgroup_name']);
-      print(group.vgroup_name);
-      print(group.vgroup_key);
-
-      items.add(new DropdownMenuItem(value: group.vgroup_name, child: new Text(group.vgroup_name)));
-      grouplist.add(group);
-      //print(group);
-      // print(grouplist);
-
-    }
-
-
-    return items;
-  }
-
-  void changedDropDownItem(String selectedGroup) {
-    print("Selected city $selectedGroup, we are going to refresh the UI");
-    setState(() {
-      _currentGroup = selectedGroup;
-      currentgroupkey = grouplist.firstWhere(((user) =>user.vgroup_name ==_currentGroup));
-      print(currentgroupkey.vgroup_key);
-
-    });
-  }
-
 
 
   @override
@@ -109,7 +65,7 @@ class _Patients_InfoState extends State<Patients_Info>  {
 
         body: Container(
 
-          child:MyappBar(),
+          child:PatientInfoHomePage(),
 
         )
     );
@@ -118,13 +74,13 @@ class _Patients_InfoState extends State<Patients_Info>  {
 
 
 
-class MyappBar extends StatefulWidget {
+class PatientInfoHomePage extends StatefulWidget {
   @override
-  const MyappBar();
-  _MyappBarState createState() => _MyappBarState();
+  //const PatientInfoHomePage();
+  _PatientInfoHomePageState createState() => _PatientInfoHomePageState();
 }
 
-class _MyappBarState extends State<MyappBar> {
+class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
 
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
@@ -188,10 +144,20 @@ class _MyappBarState extends State<MyappBar> {
             new Container(
               padding: new EdgeInsets.all(10.0),
             ),
-            new DropdownButton(
-              value: _currentGroup,
-              items: _dropDownMenuItems,
-              onChanged: changedDropDownItem,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(
+
+                )
+              ),
+              child: new DropdownButton(
+                value: _currentGroup,
+                items: _dropDownMenuItems,
+                onChanged: changedDropDownItem,
+
+              ),
             ),
             new Row(
               children: <Widget>[
@@ -200,14 +166,22 @@ class _MyappBarState extends State<MyappBar> {
                 ),
                 Flexible(
 
-                  child: TextField(
-                    controller: _textEditingController,
-                    onSubmitted: _handleSubmitted,
-                    decoration: new InputDecoration.collapsed(
-                      hintText: "검색할 환자를 입력하세요",
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _textEditingController,
+                      onSubmitted: _handleSubmitted,
+                      decoration: new InputDecoration(
+                        labelText: "search",
+                        hintText: "검색할 환자를 입력하세요",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        )
+                      ),
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.text,
                     ),
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
                   ),
 
                 ),
@@ -241,9 +215,11 @@ class _MyappBarState extends State<MyappBar> {
                       builder: (BuildContext context, AsyncSnapshot snapshot){
                         if(snapshot.data ==null){
                           return Container(
-                            child: Center(
-                              child: Text("loading"),
-                            ),
+                            child: SpinKitWave(
+                              color: Colors.lightBlueAccent,
+                              size: 50,
+
+                            )
                           );
 
                         }
@@ -258,6 +234,7 @@ class _MyappBarState extends State<MyappBar> {
                                   Card(
                                     elevation: 8.0,
                                     margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+
                                     child: Container(
                                       decoration: BoxDecoration(color:Colors.white),
                                       child: ListTile(
@@ -266,7 +243,7 @@ class _MyappBarState extends State<MyappBar> {
                                           padding: EdgeInsets.only(right: 15.0),
                                           decoration: new BoxDecoration(
                                               border: new Border(
-                                                  right: new BorderSide(width: 1.0, color: Colors.black26))),
+                                                  right: new BorderSide(width: 1.0, color: Colors.black26)),),
                                           child: Image.network(
                                           "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
                                         ),
@@ -304,35 +281,6 @@ class _MyappBarState extends State<MyappBar> {
 
 
 
-
-class Patientlist{
-  final int vgroup_key;
-  final int patient_key;
-  final String patient_id_value;
-  final String patient_name;
-  final String patient_sex;
-  final String patient_birth_dttm;
-  final String patient_phone;
-  final String patient_address;
-  final String patient_guardian;
-
-
-  Patientlist(this.vgroup_key,this.patient_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
-      this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
-
-
-
-}
-
-class Group{
-  final int vgroup_key;
-  final String vgroup_name;
-
-  Group(this.vgroup_key,this.vgroup_name);
-  @override
-  String toString() => "vgroup_key is $vgroup_key , vgroup name os $vgroup_name ";
-
-}
 
 
 

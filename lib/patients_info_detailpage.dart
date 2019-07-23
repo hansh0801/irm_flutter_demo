@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'patients_info.dart';
 import 'get_patient_data.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'irm_auth.dart';
+
 
 var imagedata;
 
@@ -50,7 +53,7 @@ class _DetailPageState extends State<DetailPage> {
                     ? widget.patientinfo.patient_name
                     : "default"),
                 showEditIcon:
-                    true), // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
+                    false), // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("patient sex")),
@@ -60,24 +63,9 @@ class _DetailPageState extends State<DetailPage> {
                     : "default"),
                 showEditIcon: true),
           ]),
+
           DataRow(cells: <DataCell>[
-            DataCell(Text("patient id value")),
-            DataCell(
-                Text(widget.patientinfo.patient_id_value != null
-                    ? widget.patientinfo.patient_id_value
-                    : "default"),
-                showEditIcon: true),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("group key")),
-            DataCell(
-                Text(widget.patientinfo.vgroup_key.toString() != null
-                    ? widget.patientinfo.vgroup_key.toString()
-                    : "default"),
-                showEditIcon: true),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("patient birth")),
+            DataCell(Text("Birth")),
             DataCell(
                 Text(widget.patientinfo.patient_birth_dttm != null
                     ? widget.patientinfo.patient_birth_dttm
@@ -85,7 +73,7 @@ class _DetailPageState extends State<DetailPage> {
                 showEditIcon: true),
           ]),
           DataRow(cells: <DataCell>[
-            DataCell(Text("patient phone")),
+            DataCell(Text("Phone")),
             DataCell(
                 Text(widget.patientinfo.patient_phone != null
                     ? widget.patientinfo.patient_phone
@@ -93,7 +81,7 @@ class _DetailPageState extends State<DetailPage> {
                 showEditIcon: true),
           ]),
           DataRow(cells: <DataCell>[
-            DataCell(Text("patient address")),
+            DataCell(Text("Address")),
             DataCell(
                 Text(widget.patientinfo.patient_address != null
                     ? widget.patientinfo.patient_address
@@ -101,7 +89,7 @@ class _DetailPageState extends State<DetailPage> {
                 showEditIcon: true),
           ]),
           DataRow(cells: <DataCell>[
-            DataCell(Text("patient guardian")),
+            DataCell(Text("Guardian")),
             DataCell(
                 Text(widget.patientinfo.patient_guardian != null
                     ? widget.patientinfo.patient_guardian
@@ -114,7 +102,18 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("patient Detailed info"),
+        title: new Text("Detailed info"),
+          actions: <Widget>[
+            new FlatButton(
+                child: new Text(
+                  "Edit Info",
+                  style: new TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                onPressed: () {
+
+
+                })
+          ]
       ),
       body: Container(
           child: Center(
@@ -127,12 +126,20 @@ class _DetailPageState extends State<DetailPage> {
                 if (snapshot.data == null) {
                   return Container(
                     child: Center(
-                      child: Text("loading images",),
+                      child: SizedBox(
+                        height: 180,
+                        width: 180,
+                        child: Center(child: SpinKitWave(
+                          color: Colors.lightBlueAccent,
+                          size: 50,
+
+                        )),
+                      )
                     ),
                   );
                 } else {
                   return Container(
-                    child: new Image.memory(imagedata,height: 200,width: 200,),
+                    child: new Image.memory(imagedata,height: 180,width: 180,),
                   );
                 }
               },

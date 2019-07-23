@@ -21,10 +21,12 @@ class _Home_PageState extends State<Home_Page> {
         child: Center(
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(
+              currentgroupkey =Group(patient_group["records"][0]["vgroup_key"], patient_group["records"][0]["vgroup_name"]);
+                  Navigator.pushNamed(
                 context,
                 navigateto,
               );
+
             },
             child: Padding(
               padding: const EdgeInsets.all(8),

@@ -11,6 +11,7 @@ bool token_exist = false;
 User_Info userinfo = User_Info("", ""); //for get userinfo using Oauth
 
 var patient_group;
+Group currentgroupkey ;
 
 class IRMAuth extends OAuthApi {
   IRMAuth(String identifier, String clientId, String clientSecret,
@@ -34,30 +35,7 @@ class IRMAuth extends OAuthApi {
   }
 }
 
-class Token {
-  final String access_token;
-  final String token_type;
-  final num expires_In;
-  final String authCode;
 
-  Token(this.access_token, this.token_type, this.expires_In, this.authCode);
-
-  Token.fromMap(Map<String, dynamic> json)
-      : access_token = json['access_token'],
-        token_type = json['token_type'],
-        expires_In = json['expires_in'],
-        authCode = json['authcode'];
-}
-
-class User_Info {
-  final String client_id;
-  final String username;
-
-  User_Info(this.username, this.client_id);
-  User_Info.fromMap(Map<String, dynamic> json)
-      : client_id = json["client_id"],
-        username = json["username"];
-}
 
 Future<Stream<String>> server() async {
   final StreamController<String> onCode = new StreamController();
@@ -108,4 +86,61 @@ Future<Null> logout() async {
 
 void getGroupinfo() async {
   patient_group = await getGroupSearchBelonged();
+}
+
+
+class Token {
+  final String access_token;
+  final String token_type;
+  final num expires_In;
+  final String authCode;
+
+  Token(this.access_token, this.token_type, this.expires_In, this.authCode);
+
+  Token.fromMap(Map<String, dynamic> json)
+      : access_token = json['access_token'],
+        token_type = json['token_type'],
+        expires_In = json['expires_in'],
+        authCode = json['authcode'];
+}
+
+class User_Info {
+  final String client_id;
+  final String username;
+
+  User_Info(this.username, this.client_id);
+  User_Info.fromMap(Map<String, dynamic> json)
+      : client_id = json["client_id"],
+        username = json["username"];
+}
+
+
+
+class Patientlist{
+  final int vgroup_key;
+  final int patient_key;
+  final String patient_id_value;
+  final String patient_name;
+  final String patient_sex;
+  final String patient_birth_dttm;
+  final String patient_phone;
+  final String patient_address;
+  final String patient_guardian;
+
+
+  Patientlist(this.vgroup_key,this.patient_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,
+      this.patient_birth_dttm,this.patient_guardian,this.patient_phone);
+
+
+
+}
+
+class Group{
+  final int vgroup_key;
+  final String vgroup_name;
+
+  Group(this.vgroup_key,this.vgroup_name);
+  @override
+  String toString() => "vgroup_key is $vgroup_key , vgroup name os $vgroup_name ";
+
 }

@@ -17,30 +17,28 @@ Future<List> getPatientList(group_id) async {
 ///자신이 속한 그룹의 이름 리스트를 반환
 ///input: nothing
 ///output: my groups' list of name
-Future<List> getGroupNameList() async{
+Future<List> getGroupNameList() async {
   var jsonData = await getGroupSearchBelonged();
   List<String> groupList = [];
-  for(var data in jsonData['records']){
+  for (var data in jsonData['records']) {
     groupList.add(data['vgroup_name']);
   }
 
   return groupList;
 }
 
-
-
 ///인자로 받은 그룹의 환자 이름 리스트를 반환
 ///input: group_id
 ///output: list of patients' name in group
-Future<List> getPatientNameList(group_id) async{
+Future<List> getPatientNameList(group_id) async {
   var queryParameters = {
-    'vgroup_key_list' : '{$group_id}',
+    'vgroup_key_list': '{$group_id}',
   };
   var jsonData = await getPatientSearch(queryParameters);
   List patientList = jsonData['patient_list'];
   List patientName = [];
 
-  for(var name in patientList){
+  for (var name in patientList) {
     patientName.add(name['patient_name']);
   }
 
@@ -53,8 +51,8 @@ Future<List> getPatientNameList(group_id) async{
 Future<List> searchPatientName(group_id, patient_name) async {
   List result = [];
   var queryParameters = {
-    'vgroup_key_list' : '{$group_id}',
-    'patient_name' : '$patient_name'
+    'vgroup_key_list': '{$group_id}',
+    'patient_name': '$patient_name'
   };
   Map patientList = await getPatientSearch(queryParameters);
   result = patientList['patient_list'];
