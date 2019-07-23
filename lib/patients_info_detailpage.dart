@@ -8,16 +8,22 @@ import 'patient_info_detail_modify.dart';
 
 var imagedata;
 
+
+
+
 class DetailPage extends StatefulWidget {
   final Patientlist patientinfo;
 
-  DetailPage({Key key, this.patientinfo}) : super(key: key);
+  DetailPage({Key key,this.patientinfo}):super
+      (key:key);
+
 
   @override
   _DetailPageState createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+
   Future getimage() async {
     imagedata = await getPatientPhoto(widget.patientinfo.patient_key);
     print(imagedata);
@@ -149,6 +155,8 @@ class _DetailPageState extends State<DetailPage> {
           ],
         ),
       )),
+
+
     );
   }
 }

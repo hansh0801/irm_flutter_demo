@@ -75,9 +75,27 @@ Future<Uint8List> getPatientPhoto(patient_key) async {
   return bytes;
 }
 
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
+///환자 정보 수정
+///input: patient's data
+///output:
+Future putPatientData(patient_key, patient_name, patient_sex, patient_birth_dttm,
+patient_phone, patient_address, patient_guardian) async{
+  var queryParameters = {
+    'patient_key' : '$patient_key',
+    'patient_name' : '$patient_name',
+    'patient_sex' : '$patient_sex',
+    'patient_birth_dttm' : '$patient_birth_dttm',
+    'patient_phone' : '$patient_phone',
+    'patient_address' : '$patient_address',
+    'patient_guardian' : '$patient_guardian',
+  };
 
-///환자 사진 정보 등록
-///
-///
+
+  var result = await putPatientUpdate(queryParameters);
+  print('putPatientData $result');
+  print(result['status']);
+  print(result['status_code']);
+
+  return result;
+}
+
