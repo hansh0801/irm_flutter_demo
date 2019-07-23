@@ -3,6 +3,7 @@ import 'patients_info.dart';
 import 'get_patient_data.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'irm_auth.dart';
+import 'patient_info_detail_modify.dart';
 
 
 var imagedata;
@@ -110,7 +111,7 @@ class _DetailPageState extends State<DetailPage> {
                   style: new TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 onPressed: () {
-
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>InfoModify()));
 
                 })
           ]
