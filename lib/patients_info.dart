@@ -4,14 +4,17 @@ import 'japiRequest.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'get_patient_data.dart';
 import 'patients_info_detailpage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
+
 List<Group> grouplist = [];
-Group currentgroupkey = Group(38061, "Test");
+
 List<Patientlist> allPatientList = [];
 List<Patientlist> searchPatientList = [];
 bool notSearched = true;
+
 
 final TextEditingController _textEditingController =
     new TextEditingController();
@@ -50,7 +53,9 @@ class Patients_Info extends StatefulWidget {
   _Patients_InfoState createState() => _Patients_InfoState();
 }
 
+
 class _Patients_InfoState extends State<Patients_Info> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,18 +64,26 @@ class _Patients_InfoState extends State<Patients_Info> {
           title: Text("Patient info"),
         ),
         body: Container(
-          child: MyappBar(),
-        ));
+
+
+          child:PatientInfoHomePage(),
+
+        )
+    );
   }
 }
 
-class MyappBar extends StatefulWidget {
-  @override
-  const MyappBar();
-  _MyappBarState createState() => _MyappBarState();
-}
 
-class _MyappBarState extends State<MyappBar> {
+
+class PatientInfoHomePage extends StatefulWidget {
+  @override
+  _PatientInfoHomePageState createState() => _PatientInfoHomePageState();
+
+  }
+
+
+class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
+
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
@@ -133,10 +146,20 @@ class _MyappBarState extends State<MyappBar> {
             new Container(
               padding: new EdgeInsets.all(10.0),
             ),
-            new DropdownButton(
-              value: _currentGroup,
-              items: _dropDownMenuItems,
-              onChanged: changedDropDownItem,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(
+
+                )
+              ),
+              child: new DropdownButton(
+                value: _currentGroup,
+                items: _dropDownMenuItems,
+                onChanged: changedDropDownItem,
+
+              ),
             ),
             new Row(
               children: <Widget>[
@@ -144,14 +167,26 @@ class _MyappBarState extends State<MyappBar> {
                   height: 20.0,
                 ),
                 Flexible(
-                  child: TextField(
-                    controller: _textEditingController,
-                    onSubmitted: _handleSubmitted,
-                    decoration: new InputDecoration.collapsed(
-                      hintText: "검색할 환자를 입력하세요",
+
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _textEditingController,
+                      onSubmitted: _handleSubmitted,
+                      decoration: new InputDecoration(
+                        labelText: "search",
+                        hintText: "검색할 환자를 입력하세요",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        )
+                      ),
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.text,
+
+
                     ),
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
                   ),
                 ),
                 Container(
@@ -171,6 +206,7 @@ class _MyappBarState extends State<MyappBar> {
             Expanded(
               child: SizedBox(
                 height: 200.0,
+
                 child: StreamBuilder(
                     stream: _getPatientList(currentgroupkey.vgroup_key),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -205,6 +241,7 @@ class _MyappBarState extends State<MyappBar> {
                                                     color: Colors.black26))),
                                         child: Image.network(
                                             "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+
                                       ),
                                       title: Text(snapshot
                                           .data[index].patient_name
@@ -277,35 +314,3 @@ class _MyappBarState extends State<MyappBar> {
   }
 }
 
-class Patientlist {
-  final int vgroup_key;
-  final int patient_key;
-  final String patient_id_value;
-  final String patient_name;
-  final String patient_sex;
-  final String patient_birth_dttm;
-  final String patient_phone;
-  final String patient_address;
-  final String patient_guardian;
-
-  Patientlist(
-      this.vgroup_key,
-      this.patient_key,
-      this.patient_id_value,
-      this.patient_name,
-      this.patient_sex,
-      this.patient_address,
-      this.patient_birth_dttm,
-      this.patient_guardian,
-      this.patient_phone);
-}
-
-class Group {
-  final int vgroup_key;
-  final String vgroup_name;
-
-  Group(this.vgroup_key, this.vgroup_name);
-  @override
-  String toString() =>
-      "vgroup_key is $vgroup_key , vgroup name os $vgroup_name ";
-}
