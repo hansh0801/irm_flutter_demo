@@ -55,20 +55,29 @@ Future<Map> getPatientSearch(queryParameters) async {
 ///    "patient_phone" : "010-1234-5678",
 ///    "patient_address" : "somewhere",
 ///    "patient_guardian" : "God" 
+/// output : status_code
 Future postPatientCreate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
   var ret;
   http.Response resp = await http.post(uri, headers: {
     'Accept': 'text/html',
+    'Content-Type' : 'application/x-www-form-urlencoded',
     'Authorization': 'Bearer ${token.access_token}',
   }, body:
     queryParameters,
   // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+  );
 
-  return json.decode(ret);
+  return resp.statusCode;
+
+   /*   .then((response) {
+    print('post ${response.headers['status_code']}');
+    print('post1 ${response.statusCode}');
+    ret = utf8.decode(response.bodyBytes);
+  });*/
+
+
+ // return json.decode(ret);
 }
 
 ///환자 수정
@@ -90,17 +99,9 @@ Future putPatientUpdate(queryParameters) async {
   }, body:
     queryParameters,
   // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+  );
 
-  if(resp.statusCode != 200){
-    print('resp != 200');
-    return null;
-  }
-
-  print(resp.headers['status']);
-  print(resp.headers['status_code']);
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
