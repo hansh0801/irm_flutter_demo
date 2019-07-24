@@ -13,8 +13,6 @@ List<Group> grouplist = [];
 
 List<Patientlist> allPatientList = [];
 List<Patientlist> searchPatientList = [];
-bool notSearched = true;
-
 
 final TextEditingController _textEditingController =
     new TextEditingController();
@@ -42,7 +40,7 @@ Stream<List<Patientlist>> _getPatientList(int currentgroupkey) async* {
     PatientLists.add(patientlist);
   }
 
- // notSearched = true;
+  // notSearched = true;
   print(PatientLists.length);
 
   yield PatientLists;
@@ -53,9 +51,7 @@ class Patients_Info extends StatefulWidget {
   _Patients_InfoState createState() => _Patients_InfoState();
 }
 
-
 class _Patients_InfoState extends State<Patients_Info> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,25 +60,18 @@ class _Patients_InfoState extends State<Patients_Info> {
           title: Text("Patient info"),
         ),
         body: Container(
-
-
-          child:PatientInfoHomePage(),
-
-        )
-    );
+          child: PatientInfoHomePage(),
+        ));
   }
 }
-
-
 
 class PatientInfoHomePage extends StatefulWidget {
   @override
   _PatientInfoHomePageState createState() => _PatientInfoHomePageState();
-
-  }
-
+}
 
 class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
+  bool notSearched = true;
 
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
@@ -128,6 +117,8 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
       _textEditingController.clear();
       searchPatientList.clear();
       notSearched = false;
+      if(text == null)
+        notSearched = true;
       for (var i = 0; i < allPatientList.length; i++) {
         if (allPatientList[i].patient_name.contains(text)) {
           searchPatientList.add(allPatientList[i]);
@@ -149,16 +140,12 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                border: Border.all(
-
-                )
-              ),
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: Border.all()),
               child: new DropdownButton(
                 value: _currentGroup,
                 items: _dropDownMenuItems,
                 onChanged: changedDropDownItem,
-
               ),
             ),
             new Row(
@@ -167,25 +154,21 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                   height: 20.0,
                 ),
                 Flexible(
-
-
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       controller: _textEditingController,
                       onSubmitted: _handleSubmitted,
                       decoration: new InputDecoration(
-                        labelText: "search",
-                        hintText: "검색할 환자를 입력하세요",
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        )
-                      ),
+                          labelText: "search",
+                          hintText: "검색할 환자를 입력하세요",
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)),
+                          )),
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.text,
-
-
                     ),
                   ),
                 ),
@@ -199,14 +182,14 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                   margin: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: IconButton(
                       icon: Icon(Icons.send),
-                      onPressed: () =>_handleSubmitted(_textEditingController.text)),
+                      onPressed: () =>
+                          _handleSubmitted(_textEditingController.text)),
                 ),
               ],
             ),
             Expanded(
               child: SizedBox(
                 height: 200.0,
-
                 child: StreamBuilder(
                     stream: _getPatientList(currentgroupkey.vgroup_key),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -241,7 +224,6 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                                     color: Colors.black26))),
                                         child: Image.network(
                                             "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
-
                                       ),
                                       title: Text(snapshot
                                           .data[index].patient_name
@@ -313,4 +295,3 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
     );
   }
 }
-
