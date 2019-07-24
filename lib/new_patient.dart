@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'get_patient_data.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'japiRequest.dart';
 import 'irm_auth.dart';
 
@@ -9,11 +10,9 @@ class New_Patient extends StatefulWidget {
 }
 
 class _New_PatientState extends State<New_Patient> {
-  final TextEditingController text_vgroup_key = new TextEditingController();
   final TextEditingController text_patient_id_value =
       new TextEditingController();
   final TextEditingController text_patient_name = new TextEditingController();
-  final TextEditingController text_patient_sex = new TextEditingController();
   final TextEditingController text_patient_birth_dttm =
       new TextEditingController();
   final TextEditingController text_patient_phone = new TextEditingController();
@@ -21,13 +20,56 @@ class _New_PatientState extends State<New_Patient> {
       new TextEditingController();
   final TextEditingController text_patient_guardian =
       new TextEditingController();
+  String patient_sex = 'M';
+  var radioValue = 0;
+  var currentgroupkey = Group(patient_group["records"][0]["vgroup_key"],
+      patient_group["records"][0]["vgroup_name"]);
+  List<DropdownMenuItem<String>> _dropDownMenuItems;
+  List<Group> grouplist = [];
+  String _currentGroup;
 
-  void _handleSubmitted(String text) async {
+  void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentGroup = _dropDownMenuItems[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = new List();
+    int index;
+    index = 0;
+    Group group;
+
+    for (; index < patient_group['records'].length; index++) {
+      group = Group(patient_group['records'][index]['vgroup_key'],
+          patient_group['records'][index]['vgroup_name']);
+      print(group.vgroup_name);
+      print(group.vgroup_key);
+
+      items.add(new DropdownMenuItem(
+          value: group.vgroup_name, child: new Text(group.vgroup_name)));
+      grouplist.add(group);
+    }
+
+    return items;
+  }
+
+  void changedDropDownItem(String selectedGroup) {
+    print("Selected city $selectedGroup, we are going to refresh the UI");
+    setState(() {
+      _currentGroup = selectedGroup;
+      currentgroupkey =
+          grouplist.firstWhere(((user) => user.vgroup_name == _currentGroup));
+      print(currentgroupkey.vgroup_key);
+    });
+  }
+
+  Future _addPatient() async {
     var queryParameters = {
-      'vgroup_key': '${text_vgroup_key.text}',
+      'vgroup_key': '${currentgroupkey.vgroup_key}',
       'patient_id_value': '${text_patient_id_value.text}',
       'patient_name': '${text_patient_name.text}',
-      'patient_sex': '${text_patient_sex.text}',
+      'patient_sex': '${patient_sex}',
       'patient_birth_dttm': '${text_patient_birth_dttm.text}',
       'patient_phone': '${text_patient_phone.text}',
       'patient_address': '${text_patient_address.text}',
@@ -35,208 +77,184 @@ class _New_PatientState extends State<New_Patient> {
     };
 
     var result = await postPatientCreate(queryParameters);
-    print(result);
 
-/*    var alert =
-        new AlertDialog(content: new Text(result), actions: <Widget>[
-      new FlatButton(
-          child: const Text("Ok"),
-          onPressed: () {
-            Navigator.pop(context);
-          })
-    ]);*/
+    print(patient_sex);
+    if (result == 200) {
+      print('$result 성공');
+    } else {
+      print("$result 실패");
+    }
 
-    text_vgroup_key.clear();
-    text_patient_id_value.clear();
-    text_patient_name.clear();
-    text_patient_sex.clear();
-    text_patient_birth_dttm.clear();
-    text_patient_phone.clear();
-    text_patient_address.clear();
-    text_patient_guardian.clear();
+    return result;
   }
 
-  Widget _buildTextComposer() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: TextField(
-        controller: text_patient_id_value,
-        onSubmitted: _handleSubmitted,
-        decoration: new InputDecoration.collapsed(hintText: "Send a message"),
-      ),
-    );
+  void handleRadioValueChange(value) {
+    setState(() {
+      radioValue = value;
+
+      switch (radioValue) {
+        case 0:
+          patient_sex = 'M';
+          break;
+        case 1:
+          patient_sex = 'F';
+          break;
+      }
+    });
   }
 
-  ///vgroup_key
-  ///patient_id_value
-  ///patient_name
-  ///patient_sex
-  ///patient_birth_dttm
-  ///patient_phone
-  ///patient_address
-  ///patient_guardian
+  @override
+  Widget PatientData() => DataTable(
+        columns: <DataColumn>[
+          DataColumn(label: Text("Property"), tooltip: "Property"),
+          DataColumn(label: Text("Patient Data"), tooltip: "Patient data")
+        ],
+        rows: <DataRow>[
+          DataRow(cells: <DataCell>[
+            DataCell(Text("vgroup_key")),
+            DataCell(
+              DropdownButton(
+                value: _currentGroup,
+                items: _dropDownMenuItems,
+                onChanged: changedDropDownItem,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_id_value")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_id_value,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_id_value",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_name")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_name,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_name",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_sex")),
+            DataCell(
+              Row(  ///라디오 버튼 사용
+                children: <Widget>[
+                  Text('M'),
+                  Radio(
+                    value: 0,
+                    groupValue: radioValue,
+                    onChanged: handleRadioValueChange,
+                  ),
+                  Text('F'),
+                  Radio(
+                    value: 1,
+                    groupValue: radioValue,
+                    onChanged: handleRadioValueChange,
+                  ),
+                ],
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_birth_dttm")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_birth_dttm,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_birth_dttm",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_phone")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_phone,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_phone",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_address")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_address,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_address",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+          DataRow(cells: <DataCell>[
+            DataCell(Text("patient_guardian")),
+            DataCell(
+              TextFormField(
+                controller: text_patient_guardian,
+                decoration: new InputDecoration.collapsed(
+                  hintText: "patient_guardian",
+                ),
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ]),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        title: Text("New_Patient1"),
-      ),
+      resizeToAvoidBottomPadding: false,
+      appBar: new AppBar(title: new Text("New Patient"), actions: <Widget>[
+        new FlatButton(
+            child: new Text(
+              "Add",
+              style: new TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            onPressed: () async {
+              var result = await _addPatient();
+              var alert = AlertDialog(
+                  content: new Text(result.toString()),
+                  actions: <Widget>[
+                    new FlatButton(
+                        child: const Text("Ok"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        })
+                  ]);
+              showDialog(
+                  context: context, builder: (BuildContext context) => alert);
+            })
+      ]),
       body: Container(
+          child: Center(
         child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_vgroup_key,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "vgroup_key",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_id_value,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_id_value",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_name,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_name",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_sex,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_sex",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_birth_dttm,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_birth_dttm",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_phone,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_phone",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_address,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_address",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-              ),
-              new Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      controller: text_patient_guardian,
-                      onSubmitted: _handleSubmitted,
-                      decoration: new InputDecoration.collapsed(
-                        hintText: "patient_guardian",
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.text,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: IconButton(
-                        icon: Icon(Icons.send),
-                        onPressed: () =>
-                            _handleSubmitted(text_vgroup_key.text)),
-                  ),
-                ],
-              ),
-            ]),
-      ),
+          children: <Widget>[
+            PatientData(),
+          ],
+        ),
+      )),
     );
   }
 }

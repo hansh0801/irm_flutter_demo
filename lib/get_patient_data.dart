@@ -83,7 +83,7 @@ patient_phone, patient_address, patient_guardian) async{
   var queryParameters = {
     'patient_key' : '$patient_key',
     'patient_name' : '$patient_name',
-    'patient_sex' : '$patient_sex',
+    'patient_sex' : '$patient_sex', //무조건 M, F, O 여야함
     'patient_birth_dttm' : '$patient_birth_dttm',
     'patient_phone' : '$patient_phone',
     'patient_address' : '$patient_address',
@@ -99,3 +99,14 @@ patient_phone, patient_address, patient_guardian) async{
   return result;
 }
 
+Future deletePatientPhoto(patient_key) async{
+  var result;
+
+  var queryParameters = {
+    'patient_key' : '$patient_key'
+  };
+
+  result = await deletePatient(queryParameters);
+
+  return result;
+}
