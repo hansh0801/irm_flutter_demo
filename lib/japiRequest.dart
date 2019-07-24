@@ -99,17 +99,9 @@ Future putPatientUpdate(queryParameters) async {
   }, body:
     queryParameters,
   // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+  );
 
-  if(resp.statusCode != 200){
-    print('resp != 200');
-    return null;
-  }
-
-  print(resp.headers['status']);
-  print(resp.headers['status_code']);
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
