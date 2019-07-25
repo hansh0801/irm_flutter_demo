@@ -4,6 +4,8 @@ import 'login_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'patients_info.dart';
 import 'get_patient_data.dart';
+import 'dart:io';
+import "package:flutter/services.dart";
 
 class Home_Page extends StatefulWidget {
   @override
@@ -90,7 +92,7 @@ class _Home_PageState extends State<Home_Page> {
                           const Color(0xFFFFFFFF)),
                     ),
                     new GestureDetector(
-                      onTap: () => Navigator.of(context).pop(true),
+                      onTap:  ()async => await SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
                       child: roundedButton(" Yes ", const Color(0xff216bd6),
                           const Color(0xFFFFFFFF)),
                     ),

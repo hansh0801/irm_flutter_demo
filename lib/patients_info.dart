@@ -236,8 +236,9 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                             margin: new EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 6.0),
                             child: Container(
-                              decoration: BoxDecoration(color: Colors.white),
+                              decoration: BoxDecoration(),
                               child: ListTile(
+
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.0, vertical: 10.0),
                                 leading: Container(
@@ -256,15 +257,23 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                         .toString()),
                                   ),
                                 ),
-                                title: Text(snapshot.data[index].patient_name
-                                        .toString() +
-                                    " | " +
-                                    snapshot.data[index].patient_sex
-                                        .toString() +
-                                    ' / ' +
-                                    calculateAge(snapshot
+                                title: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Flexible(child:Text(snapshot.data[index].patient_name
+                                        .toString())),
+                                    Text(
+                                        snapshot.data[index].patient_sex
+                                            .toString() +
+                                        ' / ' +
+                                        calculateAge(snapshot
                                             .data[index].patient_birth_dttm)
-                                        .toString()),
+                                            .toString())
+
+                                  ],
+                                ) ,
+
                                 subtitle: Text(snapshot
                                     .data[index].patient_id_value
                                     .toString()),

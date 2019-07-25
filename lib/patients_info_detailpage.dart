@@ -58,7 +58,7 @@ class _DetailPageState extends State<DetailPage> {
             DataCell(
                 Text(widget.patientinfo.patient_name != null
                     ? widget.patientinfo.patient_name
-                    : "default"),
+                    : ""),
                 showEditIcon:
                     false,
                 ),
@@ -69,13 +69,9 @@ class _DetailPageState extends State<DetailPage> {
             DataCell(
                 Text(widget.patientinfo.patient_sex != null
                     ? widget.patientinfo.patient_sex
-                    : "default"),
-                showEditIcon: true,
-                onTap:()=> new TextField(
-                  onChanged: (text){
-                    var value= text;
-                  },
-                ) )
+                    : ""),
+
+                 )
             ,
           ]),
 
@@ -84,32 +80,32 @@ class _DetailPageState extends State<DetailPage> {
             DataCell(
                 Text(widget.patientinfo.patient_birth_dttm != null
                     ? widget.patientinfo.patient_birth_dttm
-                    : "default"),
-                showEditIcon: true),
+                    : ""),
+                ),
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("Phone")),
             DataCell(
                 Text(widget.patientinfo.patient_phone != null
                     ? widget.patientinfo.patient_phone
-                    : "default"),
-                showEditIcon: true),
+                    : ""),
+                ),
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("Address")),
             DataCell(
                 Text(widget.patientinfo.patient_address != null
                     ? widget.patientinfo.patient_address
-                    : "default"),
-                showEditIcon: true),
+                    : ""),
+                ),
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("Guardian")),
             DataCell(
                 Text(widget.patientinfo.patient_guardian != null
                     ? widget.patientinfo.patient_guardian
-                    : "default"),
-                showEditIcon: true),
+                    : ""),
+                ),
           ]),
         ],
       );
@@ -159,7 +155,7 @@ class _DetailPageState extends State<DetailPage> {
                 }
               },
             ),
-            Flexible(child:PatientData(), )
+            SizedBox(width:400,height:400,child:PatientData(), )
 
           ],
         ),
