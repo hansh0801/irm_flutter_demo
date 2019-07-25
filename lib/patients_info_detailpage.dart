@@ -11,9 +11,9 @@ var imagedata;
 
 
 
+
 class DetailPage extends StatefulWidget {
   final Patientlist patientinfo;
-
   DetailPage({Key key,this.patientinfo}):super
       (key:key);
 
@@ -60,7 +60,9 @@ class _DetailPageState extends State<DetailPage> {
                     ? widget.patientinfo.patient_name
                     : "default"),
                 showEditIcon:
-                    false), // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
+                    false,
+                ),
+            // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("patient sex")),
@@ -68,7 +70,13 @@ class _DetailPageState extends State<DetailPage> {
                 Text(widget.patientinfo.patient_sex != null
                     ? widget.patientinfo.patient_sex
                     : "default"),
-                showEditIcon: true),
+                showEditIcon: true,
+                onTap:()=> new TextField(
+                  onChanged: (text){
+                    var value= text;
+                  },
+                ) )
+            ,
           ]),
 
           DataRow(cells: <DataCell>[
@@ -117,7 +125,7 @@ class _DetailPageState extends State<DetailPage> {
                   style: new TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>InfoModify()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>InfoModify(patientinfo: widget.patientinfo,)));
 
                 })
           ]
@@ -129,7 +137,7 @@ class _DetailPageState extends State<DetailPage> {
             FutureBuilder(
               future: getimage(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                print(snapshot.data);
+                //print(snapshot.data);
                 if (snapshot.data == null) {
                   return Container(
                     child: Center(
@@ -151,7 +159,8 @@ class _DetailPageState extends State<DetailPage> {
                 }
               },
             ),
-            PatientData(),
+            Flexible(child:PatientData(), )
+
           ],
         ),
       )),

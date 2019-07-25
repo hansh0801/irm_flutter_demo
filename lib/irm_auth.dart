@@ -117,15 +117,15 @@ class User_Info {
 
 
 class Patientlist{
-  final int vgroup_key;
-  final int patient_key;
-  final String patient_id_value;
-  final String patient_name;
-  final String patient_sex;
-  final String patient_birth_dttm;
-  final String patient_phone;
-  final String patient_address;
-  final String patient_guardian;
+   int vgroup_key;
+   int patient_key;
+   String patient_id_value;
+    String patient_name;
+   String patient_sex;
+   String patient_birth_dttm;
+   String patient_phone;
+  String patient_address;
+  String patient_guardian;
 
 
   Patientlist(this.vgroup_key,this.patient_key,this.patient_id_value,this.patient_name,this.patient_sex,this.patient_address,

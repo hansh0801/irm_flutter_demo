@@ -9,7 +9,9 @@ String _currentGroup;
 
 List<Group> grouplist = [];
 
-bool notSearched = true;
+
+
+
 
 final TextEditingController _textEditingController =
     new TextEditingController();
@@ -34,6 +36,7 @@ Stream<List<Patientlist>> _getPatientList(int currentgroupkey) async* {
 
     PatientLists.add(patientlist);
   }
+
 
   print(PatientLists.length);
 
@@ -65,7 +68,9 @@ class PatientInfoHomePage extends StatefulWidget {
 }
 
 class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
+  bool notSearched = true;
   String searchText;
+
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGroup = _dropDownMenuItems[0].value;
@@ -106,7 +111,9 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
     setState(() {
       searchText = text;
       notSearched = false;
+
       _textEditingController.clear();
+
     });
   }
 
@@ -155,6 +162,7 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
             SizedBox(
               height: 20.0,
             ),
+
             Flexible(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -222,12 +230,19 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                           right: new BorderSide(
                                               width: 1.0,
                                               color: Colors.black26))),
-                                  child: Image.network(
-                                      "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
+
+                                  child:
+                                   new CircleAvatar(
+                                    backgroundColor: getColor(snapshot.data[index].patient_sex.toString()),
+                                    child: new Text(snapshot.data[index].patient_sex.toString()),
+                                  )
+                                  ,
                                 ),
-                                title: Text(snapshot.data[index].patient_name
-                                    .toString()),
-                                subtitle: Text(snapshot.data[index].patient_sex
+                                title:Text(snapshot
+                                    .data[index].patient_name
+                                    .toString()+" | "+snapshot.data[index].patient_sex.toString()),
+                                subtitle: Text(snapshot
+                                    .data[index].patient_id_value
                                     .toString()),
                                 trailing: Icon(Icons.keyboard_arrow_right,
                                     color: Colors.black26, size: 30.0),
@@ -246,6 +261,21 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
           ),
         )
       ]),
+
     );
   }
+}
+
+
+Color getColor(String patientsex) {
+  if (patientsex == "M"||patientsex =="m" ) {
+    return Colors.blueAccent;
+  } else if(patientsex == "F"||patientsex =="f" ) {
+    return Colors.redAccent;
+  }else if(patientsex == "O"||patientsex =="o"){
+    return Colors.amberAccent;
+  }
+  else
+    return Colors.white10;
+
 }

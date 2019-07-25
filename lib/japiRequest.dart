@@ -101,6 +101,7 @@ Future putPatientUpdate(queryParameters) async {
   // ignore: missing_return
   );
 
+
   ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
