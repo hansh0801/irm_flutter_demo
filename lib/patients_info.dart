@@ -226,11 +226,12 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                             "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
                                       ),
                                       title: Text(snapshot
+                                          .data[index].patient_id_value
+                                          .toString()+" | "+snapshot.data[index].patient_sex.toString()),
+                                      subtitle: Text(snapshot
                                           .data[index].patient_name
                                           .toString()),
-                                      subtitle: Text(snapshot
-                                          .data[index].patient_sex
-                                          .toString()),
+
                                       trailing: Icon(Icons.keyboard_arrow_right,
                                           color: Colors.black26, size: 30.0),
                                       onTap: () => Navigator.push(

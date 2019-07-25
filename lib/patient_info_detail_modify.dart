@@ -156,7 +156,7 @@ class _InfoModifyState extends State<InfoModify> {
                       ),
                       Flexible(child: PatientData()),
                       SizedBox(
-                        height: 70,
+                        height: 50,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -216,7 +216,7 @@ class _InfoModifyState extends State<InfoModify> {
 
                                                 Flushbar(
                                                   flushbarPosition: FlushbarPosition.BOTTOM,
-                                                  message: "Request Successfully Saved",
+                                                  message: "Edit Request Success! Return To Main Page",
                                                   icon: Icon(
                                                     Icons.info_outline,
                                                     size: 28.0,
@@ -241,7 +241,7 @@ class _InfoModifyState extends State<InfoModify> {
                                                     color: Colors.redAccent,
                                                   ),
                                                   backgroundColor: Colors.redAccent,
-                                                  duration: Duration(seconds: 2),
+                                                  duration: Duration(seconds: 3),
                                                   leftBarIndicatorColor: Colors.redAccent,
 
                                                 )

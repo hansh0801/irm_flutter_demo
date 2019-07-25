@@ -149,7 +149,8 @@ class _New_PatientState extends State<New_Patient> {
           DataRow(cells: <DataCell>[
             DataCell(Text("patient_sex")),
             DataCell(
-              Row(  ///라디오 버튼 사용
+              Row(
+                ///라디오 버튼 사용
                 children: <Widget>[
                   Text('M'),
                   Radio(
@@ -225,36 +226,51 @@ class _New_PatientState extends State<New_Patient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      appBar: new AppBar(title: new Text("New Patient"), actions: <Widget>[
-        new FlatButton(
-            child: new Text(
-              "Add",
-              style: new TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            onPressed: () async {
-              var result = await _addPatient();
-              var alert = AlertDialog(
-                  content: new Text(result.toString()),
-                  actions: <Widget>[
-                    new FlatButton(
-                        child: const Text("Ok"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        })
-                  ]);
-              showDialog(
-                  context: context, builder: (BuildContext context) => alert);
-            })
-      ]),
+      //resizeToAvoidBottomPadding: false,
+      appBar: new AppBar(title: new Text("New Patient"), actions: <Widget>[]),
       body: Container(
-          child: Center(
-        child: new Column(
-          children: <Widget>[
-            PatientData(),
-          ],
+          child: SingleChildScrollView(
+            child: Center(
+        child: Padding(
+            padding: const EdgeInsets.all(7.0),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                PatientData(),
+                SizedBox(
+                  height: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    onPressed: () async {
+                      var result = await _addPatient();
+                      var alert = AlertDialog(
+                          content: new Text(result.toString()),
+                          actions: <Widget>[
+                            new FlatButton(
+                                child: const Text("Ok"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })
+                          ]);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => alert);
+                    },
+                    padding: EdgeInsets.all(12),
+                    color: Colors.lightBlueAccent,
+                    child: Text('환자 추가', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
         ),
-      )),
+      ),
+          )),
     );
   }
 }
