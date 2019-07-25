@@ -4,14 +4,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'get_patient_data.dart';
 import 'patients_info_detailpage.dart';
 
+
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: camel_case_types
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 String _currentGroup;
 
 List<Group> grouplist = [];
-
-
-
-
 
 final TextEditingController _textEditingController =
     new TextEditingController();
@@ -36,7 +35,6 @@ Stream<List<Patientlist>> _getPatientList(int currentgroupkey) async* {
 
     PatientLists.add(patientlist);
   }
-
 
   print(PatientLists.length);
 
@@ -113,7 +111,6 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
       notSearched = false;
 
       _textEditingController.clear();
-
     });
   }
 
@@ -140,6 +137,27 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
     yield result;
   }
 
+  int calculateAge(String birthString) {
+    if (birthString == null) return 0;
+    DateTime birthDate = DateTime.parse(birthString.substring(0, 10));
+    DateTime currentDate = DateTime.now();
+    print(currentDate);
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+
+    return age;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -162,7 +180,6 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
             SizedBox(
               height: 20.0,
             ),
-
             Flexible(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -230,17 +247,24 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                           right: new BorderSide(
                                               width: 1.0,
                                               color: Colors.black26))),
-
-                                  child:
-                                   new CircleAvatar(
-                                    backgroundColor: getColor(snapshot.data[index].patient_sex.toString()),
-                                    child: new Text(snapshot.data[index].patient_sex.toString()),
-                                  )
-                                  ,
+                                  child: new CircleAvatar(
+                                    backgroundColor: getColor(snapshot
+                                        .data[index].patient_sex
+                                        .toString()),
+                                    child: new Text(snapshot
+                                        .data[index].patient_sex
+                                        .toString()),
+                                  ),
                                 ),
-                                title:Text(snapshot
-                                    .data[index].patient_name
-                                    .toString()+" | "+snapshot.data[index].patient_sex.toString()),
+                                title: Text(snapshot.data[index].patient_name
+                                        .toString() +
+                                    " | " +
+                                    snapshot.data[index].patient_sex
+                                        .toString() +
+                                    ' / ' +
+                                    calculateAge(snapshot
+                                            .data[index].patient_birth_dttm)
+                                        .toString()),
                                 subtitle: Text(snapshot
                                     .data[index].patient_id_value
                                     .toString()),
@@ -261,21 +285,17 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
           ),
         )
       ]),
-
     );
   }
 }
 
-
 Color getColor(String patientsex) {
-  if (patientsex == "M"||patientsex =="m" ) {
+  if (patientsex == "M" || patientsex == "m") {
     return Colors.blueAccent;
-  } else if(patientsex == "F"||patientsex =="f" ) {
+  } else if (patientsex == "F" || patientsex == "f") {
     return Colors.redAccent;
-  }else if(patientsex == "O"||patientsex =="o"){
+  } else if (patientsex == "O" || patientsex == "o") {
     return Colors.amberAccent;
-  }
-  else
+  } else
     return Colors.white10;
-
 }
