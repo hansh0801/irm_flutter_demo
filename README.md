@@ -1,6 +1,6 @@
 # irm_prototype1
 
-A new Flutter application.
+IRM Company project Using A Flutter.
 
 ## Getting Started
 
