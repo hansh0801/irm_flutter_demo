@@ -14,7 +14,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      //navigatorKey: alice.getNavigatorKey(),
       debugShowCheckedModeBanner: false, //for keyboard layout error handling
       title: "IRM Test App",
       theme: new ThemeData(
@@ -25,72 +24,42 @@ class _MainLoginPageState extends State<MainLoginPage> {
   }
 }
 
-final IRMAuth irmApi = new IRMAuth(
-    "FRONT-VL Dev04",
-    "front-vl-dev04",
-    "front-vl-dev04-secret",
-    "http://localhost:8080"); // for Oauth api information
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //GlobalObjectKey<ScaffoldState> _scaffoldKey;
   @override
-  /*initState(){
-    super.initState();
-    _scaffoldKey = new GlobalObjectKey<ScaffoldState>(1);
-
-
-  }*/
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
-      //appBar: new AppBar(title: new Text("IRM Test app")),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
-
             children: buildSubmitButtons()),
-//            buildSubmitButtons()
       ),
     );
   }
 
   Future<Null> login() async {
-    //login
     await getToken();
     await getUserInfo();
-    await getGroupinfo();
-
-    print(token.access_token);
-    // getUserInfo();
+    getGroupinfo();
 
     Navigator.pushNamed(
       context,
       'home_page',
     );
-
-    //print(token);
-    //print(userinfo);
   }
 
   List<Widget> buildSubmitButtons() {
-    //buildsubmitbuttons
     return [
       Image.asset(
         "images/irm_logo.png",
         width: 300,
         height: 100,
-        //fit: BoxFit.cover,
       ),
-      /*SizedBox(
-        height: 30.0,
-      ),*/
       new RaisedButton(
         child: new Text(
           "login with IRM Account",
@@ -107,15 +76,14 @@ class _LoginPageState extends State<LoginPage> {
     ];
   }
 
-  Future<Token> getToken() async {
-    //gettoken
+  Future getToken() async {
     String url =
-        'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken&state=xyz';
+        'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken';
 
     final FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.launch(url /*, clearCache: true, clearCookies: true*/);
     print("not closed");
-    Stream<String> onCode = await server(); //
+    Stream<String> onCode = await server();
     final String code = await onCode.first;
 
     webviewPlugin.close();
@@ -136,17 +104,17 @@ class _LoginPageState extends State<LoginPage> {
         "code": code,
         "grant_type": "authorization_code"
       },
-    ).then((response) {
-      var temp_token = json.decode(response.body);
-      token = Token(temp_token['access_token'], temp_token['token_type'],
-          temp_token['expires_in'], code);
+    );
 
-      print('token is');
-      print(token.access_token);
-    });
+    var temp_token = json.decode(response.body);
+
+    token = Token(temp_token['access_token'], temp_token['token_type'],
+        temp_token['expires_in'], temp_token['refresh_token']);
+
+    print('token is');
+    print('access_token: ${token.access_token}');
+    print('refresh_token: ${token.refresh_token}');
 
     print(token.token_type);
-
-    // return new Token.fromMap(json.decode(response.body));
   }
 }
