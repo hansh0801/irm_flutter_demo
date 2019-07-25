@@ -101,6 +101,9 @@ Future putPatientUpdate(queryParameters) async {
   // ignore: missing_return
   );
 
+  if(resp.statusCode != 200){
+    return {};
+  }
 
   ret = utf8.decode(resp.bodyBytes);
 

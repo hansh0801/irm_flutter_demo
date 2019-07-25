@@ -92,9 +92,9 @@ patient_phone, patient_address, patient_guardian) async{
 
 
   var result = await putPatientUpdate(queryParameters);
+
+
   print('putPatientData $result');
-  print(result['status']);
-  print(result['status_code']);
 
   return result;
 }
