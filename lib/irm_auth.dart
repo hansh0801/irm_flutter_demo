@@ -57,7 +57,7 @@ Future<User_Info> getUserInfo() async {
 
 Future refreshToken() async {
   ///https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/token
-  var uri = Uri.https('oauth2-dev.irm.kr', 'oauth2-dev.irm.kr');
+  var uri = Uri.https('oauth2-dev.irm.kr', '/AuthServer/rest/oauth2/token');
 
   http.Response resp = await http.post(uri, headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
