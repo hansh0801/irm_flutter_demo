@@ -47,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
     await getUserInfo();
     getGroupinfo();
 
+    Timer(Duration(seconds: token.expires_in), refreshToken);
+
     Navigator.pushNamed(
       context,
       'home_page',

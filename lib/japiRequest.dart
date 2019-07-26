@@ -1,12 +1,12 @@
 import "package:http/http.dart" as http;
 import 'dart:convert';
 import 'dart:io';
-
 import 'irm_auth.dart';
+
+//ignore_for_file: missing_return
 
 final String serverUrl = 'https://xdsserver-dev.irm.kr/XDSServer/api';
 final String url = 'xdsserver-dev.irm.kr';
-
 
 ///json 형태로 리턴
 Future getGroupSearchBelonged() async {
@@ -17,10 +17,13 @@ Future getGroupSearchBelonged() async {
     'Accept': 'text/html',
     'Authorization': 'Bearer ${token.access_token}',
     'Content-Type': 'application/json',
-  // ignore: missing_return
-  }).then((response) {
-    ret = utf8.decode(response.bodyBytes);
   });
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
@@ -38,10 +41,14 @@ Future<Map> getPatientSearch(queryParameters) async {
       'Accept': 'text/html',
       'Authorization': 'Bearer ${token.access_token}',
     },
-  // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+  );
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
+
 
   return json.decode(ret);
 }
@@ -58,26 +65,15 @@ Future<Map> getPatientSearch(queryParameters) async {
 /// output : status_code
 Future postPatientCreate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
-  var ret;
   http.Response resp = await http.post(uri, headers: {
     'Accept': 'text/html',
     'Content-Type' : 'application/x-www-form-urlencoded',
     'Authorization': 'Bearer ${token.access_token}',
   }, body:
     queryParameters,
-  // ignore: missing_return
   );
 
   return resp.statusCode;
-
-   /*   .then((response) {
-    print('post ${response.headers['status_code']}');
-    print('post1 ${response.statusCode}');
-    ret = utf8.decode(response.bodyBytes);
-  });*/
-
-
- // return json.decode(ret);
 }
 
 ///환자 수정
@@ -98,7 +94,6 @@ Future putPatientUpdate(queryParameters) async {
     'Authorization': 'Bearer ${token.access_token}',
   }, body:
     queryParameters,
-  // ignore: missing_return
   );
 
   if(resp.statusCode != 200){
@@ -147,10 +142,13 @@ Future putPatientSetPhoto(queryParameters) async {
   },
   body:
     queryParameters
-  // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+  );
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
@@ -166,10 +164,13 @@ Future getPatientGetPhoto(queryParameters) async {
   http.Response resp = await http.get(uri, headers: {
     'Accept': 'text/html',
     'Authorization': 'Bearer ${token.access_token}',
-  // ignore: missing_return
-  }).then((response) {
-    ret = utf8.decode(response.bodyBytes);
   });
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   ret = json.decode(ret);
   ret['patient_photo'] = ret['patient_photo'].toString().replaceAll('\/', '/').replaceAll('\n', '');

@@ -53,8 +53,6 @@ Future<User_Info> getUserInfo() async {
   return null;
 }
 
-///
-
 Future refreshToken() async {
   ///https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/token
   var uri = Uri.https('oauth2-dev.irm.kr', '/AuthServer/rest/oauth2/token');
@@ -73,9 +71,9 @@ Future refreshToken() async {
 
   token = Token(data['access_token'], data['token_type'], data['expires_in'],
       data['refresh_token']);
-}
 
-///
+  Timer(Duration(seconds: token.expires_in), refreshToken);
+}
 
 Future<Null> logout() async {
   //for logout
