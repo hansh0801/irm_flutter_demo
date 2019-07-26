@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'japiRequest.dart';
 import 'irm_auth.dart';
+import 'package:flushbar/flushbar.dart';
 
 //ignore_for_file: camel_case_types
 //ignore_for_file: non_constant_identifier_names
@@ -269,18 +270,47 @@ class _New_PatientState extends State<New_Patient> {
                     ),
                     onPressed: () async {
                       var result = await _addPatient();
-                      var alert = AlertDialog(
-                          content: new Text(result.toString()),
-                          actions: <Widget>[
-                            new FlatButton(
-                                child: const Text("Ok"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                })
-                          ]);
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => alert);
+                      result.toString();
+
+                      if(result==200){
+
+
+                        Flushbar(
+                          flushbarPosition: FlushbarPosition.BOTTOM,
+                          message: "Add Request Success!",
+                          icon: Icon(
+                            Icons.info_outline,
+                            size: 28.0,
+                            color: Colors.blueAccent,
+                          ),
+                          backgroundColor: Colors.blueAccent,
+                          duration: Duration(seconds: 2),
+                          leftBarIndicatorColor: Colors.blueAccent,
+
+                        )
+                          ..show(context);
+
+
+                      }
+                      else{
+                        Flushbar(
+                          flushbarPosition: FlushbarPosition.BOTTOM,
+                          message: "Request failed! check out what you did",
+                          icon: Icon(
+                            Icons.info_outline,
+                            size: 28.0,
+                            color: Colors.redAccent,
+                          ),
+                          backgroundColor: Colors.redAccent,
+                          duration: Duration(seconds: 3),
+                          leftBarIndicatorColor: Colors.redAccent,
+
+                        )
+                          ..show(context);
+
+
+
+                      }
                     },
                     padding: EdgeInsets.all(12),
                     color: Colors.lightBlueAccent,
