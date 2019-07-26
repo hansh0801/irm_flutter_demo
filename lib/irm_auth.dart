@@ -30,8 +30,6 @@ Future<Stream<String>> server() async {
 }
 
 Future<User_Info> getUserInfo() async {
-  //getuserinfo
-
   final http.Response userinforesponse = await http.post(
     "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
     headers: {
@@ -41,14 +39,12 @@ Future<User_Info> getUserInfo() async {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: {"token": token.access_token, "token_type_hint": "access_token"},
-  ).then((userinforesponse) {
+  );
     var temp_userinfo = json.decode(userinforesponse.body);
-
     userinfo = User_Info(temp_userinfo['client_id'], temp_userinfo['username']);
 
     print(userinfo.client_id);
     print(userinfo.username);
-  });
 
   return null;
 }
@@ -79,12 +75,10 @@ Future refreshToken() async {
 }
 
 Future<Null> logout() async {
-  //for logout
   token = Token("", "", 0, "");
 }
 
 void getGroupinfo() async => patient_group = await getGroupSearchBelonged();
-
 class Token {
   final String access_token;
   final String token_type;

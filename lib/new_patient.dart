@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'get_patient_data.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'japiRequest.dart';
 import 'irm_auth.dart';
+
+//ignore_for_file: camel_case_types
+//ignore_for_file: non_constant_identifier_names
 
 class New_Patient extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class New_Patient extends StatefulWidget {
 }
 
 class _New_PatientState extends State<New_Patient> {
+
   final TextEditingController text_patient_id_value =
       new TextEditingController();
   final TextEditingController text_patient_name = new TextEditingController();
@@ -69,7 +71,7 @@ class _New_PatientState extends State<New_Patient> {
       'vgroup_key': '${currentgroupkey.vgroup_key}',
       'patient_id_value': '${text_patient_id_value.text}',
       'patient_name': '${text_patient_name.text}',
-      'patient_sex': '${patient_sex}',
+      'patient_sex': '$patient_sex',
       'patient_birth_dttm': '${text_patient_birth_dttm.text}',
       'patient_phone': '${text_patient_phone.text}',
       'patient_address': '${text_patient_address.text}',
@@ -103,7 +105,6 @@ class _New_PatientState extends State<New_Patient> {
     });
   }
 
-  @override
   Widget PatientData() => DataTable(
         columns: <DataColumn>[
           DataColumn(label: Text("Property"), tooltip: "Property"),
