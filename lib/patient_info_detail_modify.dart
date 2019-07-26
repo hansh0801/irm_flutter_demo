@@ -19,6 +19,25 @@ class InfoModify extends StatefulWidget {
 }
 
 class _InfoModifyState extends State<InfoModify> {
+  DateTime date = new DateTime.now();
+  TimeOfDay time = new TimeOfDay.now();
+
+  Future<Null> selectDate(BuildContext context) async{
+    final DateTime picked = await showDatePicker(
+        context: context, initialDate: date, firstDate: new DateTime(1960), lastDate: new DateTime(2020));
+    if(picked != null && picked!=date){
+      print("date selected:${date.toString()}");
+      setState((){
+        date = picked;
+
+
+      });
+
+    }
+  }
+
+
+
   Widget PatientData() => DataTable(
         columns: <DataColumn>[
           DataColumn(
@@ -74,16 +93,13 @@ class _InfoModifyState extends State<InfoModify> {
             DataCell(Text("Birth")),
             DataCell(
               Container(width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_birth_dttm,
-                  onSaved: (input) => birth = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("picked date:${date.toString().substring(0,10)}"),
+                    new IconButton(icon: Icon(Icons.calendar_today), onPressed:(){selectDate(context);}, )
+                  ],
+
                 ),
               ),
             ),
@@ -206,7 +222,7 @@ class _InfoModifyState extends State<InfoModify> {
                                                     name,
                                                     sex,
                                                     address,
-                                                    birth,
+                                                    date.toString(),
                                                     guardian,
                                                     phone);
                                                 var result =await putPatientData(

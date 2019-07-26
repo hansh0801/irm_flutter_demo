@@ -6,13 +6,18 @@ import 'patients_info.dart';
 import 'get_patient_data.dart';
 import 'dart:io';
 import "package:flutter/services.dart";
+import 'drawer.dart';
 
 class Home_Page extends StatefulWidget {
+
+
+
   @override
   _Home_PageState createState() => _Home_PageState();
 }
 
 class _Home_PageState extends State<Home_Page> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   Material myItems(
       IconData icon, String heading, int color, String navigateto) {
     return Material(
@@ -102,6 +107,7 @@ class _Home_PageState extends State<Home_Page> {
               });
         },
         child: new Scaffold(
+          key: _key,
           appBar: new AppBar(
             title: new Text("IRM Test APP"),
             actions: <Widget>[
@@ -116,7 +122,7 @@ class _Home_PageState extends State<Home_Page> {
                   })
             ],
           ),
-           drawer: HomePageDrawer(),
+           drawer: buildDrawer(),
           body: new Container(
               child: StaggeredGridView.count(
             crossAxisCount: 2,
@@ -165,43 +171,4 @@ Widget roundedButton(String buttonLabel, Color bgColor, Color textColor) {
     ),
   );
   return loginBtn;
-}
-
-class HomePageDrawer extends StatefulWidget {
-  @override
-  _HomePageDrawerState createState() => _HomePageDrawerState();
-}
-
-class _HomePageDrawerState extends State<HomePageDrawer> {
-  @override
-  Widget build(BuildContext context) {
-    return new Drawer(
-      child: ListView(
-        children: <Widget>[
-          new UserAccountsDrawerHeader(
-            accountName: new Text(userinfo.username),
-            accountEmail: new Text(userinfo.client_id),
-            currentAccountPicture: new CircleAvatar(
-              backgroundImage: new NetworkImage(
-                  "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
-            ),
-          ),
-          new ListTile(
-            title: new Text("My Info"),
-            trailing: new Icon(Icons.arrow_upward),
-          ),
-          new ListTile(
-            title: new Text("Settings"),
-            trailing: new Icon(Icons.arrow_downward),
-          ),
-          new Divider(),
-          new ListTile(
-            title: new Text("close"),
-            trailing: new Icon(Icons.close),
-            onTap: ()=>Navigator.of(context).pop(),
-          )
-        ],
-      ),
-    );
-  }
 }
