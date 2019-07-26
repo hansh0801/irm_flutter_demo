@@ -2,6 +2,8 @@ import 'japiRequest.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
+//ignore_for_file: non_constant_identifier_names
+
 ///인자로 받은 그룹의 환자 정보 리스트를 반환
 ///input: group_id
 ///output: groups' patient list

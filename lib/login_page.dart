@@ -47,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
     await getUserInfo();
     getGroupinfo();
 
+    Timer(Duration(seconds: token.expires_in), refreshToken);
+
     Navigator.pushNamed(
       context,
       'home_page',
@@ -106,10 +108,10 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    var temp_token = json.decode(response.body);
+    var tempToken = json.decode(response.body);
 
-    token = Token(temp_token['access_token'], temp_token['token_type'],
-        temp_token['expires_in'], temp_token['refresh_token']);
+    token = Token(tempToken['access_token'], tempToken['token_type'],
+        tempToken['expires_in'], tempToken['refresh_token']);
 
     print('token is');
     print('access_token: ${token.access_token}');
