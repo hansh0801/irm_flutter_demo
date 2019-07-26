@@ -1,26 +1,38 @@
 import "package:http/http.dart" as http;
 import 'dart:convert';
 import 'dart:io';
-
 import 'irm_auth.dart';
 
 final String serverUrl = 'https://xdsserver-dev.irm.kr/XDSServer/api';
 final String url = 'xdsserver-dev.irm.kr';
 
-
 ///json 형태로 리턴
 Future getGroupSearchBelonged() async {
   var uri = Uri.http(
-      url, '/XDSServer/api/vgroup_belonged.w2ui'); //, queryParameters);
+      url, '/XDSServer/api/vgroup_belonged.w2ui');
+  http.Response resp;
   var ret;
-  http.Response resp = await http.get(uri, headers: {
-    'Accept': 'text/html',
-    'Authorization': 'Bearer ${token.access_token}',
-    'Content-Type': 'application/json',
-  // ignore: missing_return
-  }).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+
+  while(true){
+    resp = await http.get(uri, headers: {
+      'Accept': 'text/html',
+      'Authorization': 'Bearer ${token.access_token}',
+      'Content-Type': 'application/json',
+    });
+
+    if(resp.statusCode == 401){
+      await refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
@@ -31,17 +43,31 @@ Future getGroupSearchBelonged() async {
 ///    "include_last_activity_dttm" : "true"
 Future<Map> getPatientSearch(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient', queryParameters);
+  http.Response resp;
   var ret;
-  http.Response resp = await http.get(
-    uri,
-    headers: {
-      'Accept': 'text/html',
-      'Authorization': 'Bearer ${token.access_token}',
-    },
-  // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+
+  while(true){
+    resp = await http.get(
+      uri,
+      headers: {
+        'Accept': 'text/html',
+        'Authorization': 'Bearer ${token.access_token}',
+      },
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
@@ -55,29 +81,19 @@ Future<Map> getPatientSearch(queryParameters) async {
 ///    "patient_phone" : "010-1234-5678",
 ///    "patient_address" : "somewhere",
 ///    "patient_guardian" : "God" 
-/// output : status_code
+///
+///     status_code 반환
 Future postPatientCreate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
-  var ret;
   http.Response resp = await http.post(uri, headers: {
     'Accept': 'text/html',
     'Content-Type' : 'application/x-www-form-urlencoded',
     'Authorization': 'Bearer ${token.access_token}',
   }, body:
     queryParameters,
-  // ignore: missing_return
   );
 
   return resp.statusCode;
-
-   /*   .then((response) {
-    print('post ${response.headers['status_code']}');
-    print('post1 ${response.statusCode}');
-    ret = utf8.decode(response.bodyBytes);
-  });*/
-
-
- // return json.decode(ret);
 }
 
 ///환자 수정
@@ -92,14 +108,24 @@ Future postPatientCreate(queryParameters) async {
 ///   환자 수정 또는 생성
 Future putPatientUpdate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
+  http.Response resp;
   var ret;
-  http.Response resp = await http.put(uri, headers: {
-    'Accept': 'text/html',
-    'Authorization': 'Bearer ${token.access_token}',
-  }, body:
+
+  while(true){
+    resp = await http.put(uri, headers: {
+      'Accept': 'text/html',
+      'Authorization': 'Bearer ${token.access_token}',
+    }, body:
     queryParameters,
-  // ignore: missing_return
-  );
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
 
   if(resp.statusCode != 200){
     return {};
@@ -115,7 +141,8 @@ Future putPatientUpdate(queryParameters) async {
 ///    "patient_key_list" : "{153254}",
 ///    "permanent" : "true",
 ///    "cascade" : "true"
-/// DELETE 는 json 형태가 아니라 statusCode 반환 ///////////////////
+///
+///     status_code 반환
 Future deletePatient(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
 
@@ -140,17 +167,30 @@ Future deletePatient(queryParameters) async {
 ///    "photo_tag" : "main"
 Future putPatientSetPhoto(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient_photo');
+  http.Response resp;
   var ret;
-  http.Response resp = await http.put(uri, headers: {
-    'Accept': 'text/html',
-    'Authorization': 'Bearer ${token.access_token}',
-  },
-  body:
-    queryParameters
-  // ignore: missing_return
-  ).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+
+  while(true) {
+    resp = await http.put(uri, headers: {
+      'Accept': 'text/html',
+      'Authorization': 'Bearer ${token.access_token}',
+    }, body:
+    queryParameters,
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   return json.decode(ret);
 }
@@ -162,14 +202,28 @@ Future putPatientSetPhoto(queryParameters) async {
 ///    "photo_tag" : "main"
 Future getPatientGetPhoto(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient_photo', queryParameters);
+  http.Response resp;
   var ret;
-  http.Response resp = await http.get(uri, headers: {
-    'Accept': 'text/html',
-    'Authorization': 'Bearer ${token.access_token}',
-  // ignore: missing_return
-  }).then((response) {
-    ret = utf8.decode(response.bodyBytes);
-  });
+
+  while(true){
+    resp = await http.get(uri, headers: {
+      'Accept': 'text/html',
+      'Authorization': 'Bearer ${token.access_token}',
+    });
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
 
   ret = json.decode(ret);
   ret['patient_photo'] = ret['patient_photo'].toString().replaceAll('\/', '/').replaceAll('\n', '');
@@ -181,7 +235,8 @@ Future getPatientGetPhoto(queryParameters) async {
 ///    "my_user_key": "11994",
 ///    "patient_key" : "73418",
 ///    "photo_tag" : "main"
-/// DELETE 는 json 형태가 아니라 statusCode 반환 ///////////////////
+///
+///     status_code 반환
 Future deletePatientRemovePhoto(accessToken, queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient_photo');
 

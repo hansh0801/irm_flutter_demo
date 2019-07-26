@@ -6,7 +6,6 @@ import 'japiRequest.dart';
 
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: camel_case_types
-// ignore_for_file: missing_return
 
 Token token = Token("", "", 0, ""); //token declaration and init
 User_Info userinfo = User_Info("", ""); //for get userinfo using Oauth
@@ -30,8 +29,6 @@ Future<Stream<String>> server() async {
 }
 
 Future<User_Info> getUserInfo() async {
-  //getuserinfo
-
   final http.Response userinforesponse = await http.post(
     "https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/introspect",
     headers: {
@@ -41,19 +38,15 @@ Future<User_Info> getUserInfo() async {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: {"token": token.access_token, "token_type_hint": "access_token"},
-  ).then((userinforesponse) {
+  );
     var temp_userinfo = json.decode(userinforesponse.body);
-
     userinfo = User_Info(temp_userinfo['client_id'], temp_userinfo['username']);
 
     print(userinfo.client_id);
     print(userinfo.username);
-  });
 
   return null;
 }
-
-///
 
 Future refreshToken() async {
   ///https://oauth2-dev.irm.kr/AuthServer/rest/oauth2/token
@@ -61,29 +54,30 @@ Future refreshToken() async {
 
   http.Response resp = await http.post(uri, headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'Authorization': 'Bearer ${token.access_token}',
+    'Authorization': 'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
   }, body: {
     'grant_type': 'refresh_token',
-    'refresh_token': token.refresh_token,
+    'refresh_token': '${token.refresh_token}',
   });
 
-  print(resp.statusCode);
+  print('refresh ${resp.statusCode}');
 
   var data = json.decode(resp.body);
 
   token = Token(data['access_token'], data['token_type'], data['expires_in'],
       data['refresh_token']);
+
+  print('token refreshed');
+  print('access_token: ${token.access_token}');
+  print('refresh_token: ${token.refresh_token}');
+  Timer(Duration(seconds: token.expires_in), refreshToken);
 }
 
-///
-
 Future<Null> logout() async {
-  //for logout
   token = Token("", "", 0, "");
 }
 
 void getGroupinfo() async => patient_group = await getGroupSearchBelonged();
-
 class Token {
   final String access_token;
   final String token_type;
