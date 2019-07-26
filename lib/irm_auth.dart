@@ -59,19 +59,22 @@ Future refreshToken() async {
 
   http.Response resp = await http.post(uri, headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'Authorization': 'Bearer ${token.access_token}',
+    'Authorization': 'Basic ZnJvbnQtdmwtZGV2MDQ6ZnJvbnQtdmwtZGV2MDQtc2VjcmV0',
   }, body: {
     'grant_type': 'refresh_token',
-    'refresh_token': token.refresh_token,
+    'refresh_token': '${token.refresh_token}',
   });
 
-  print(resp.statusCode);
+  print('refresh ${resp.statusCode}');
 
   var data = json.decode(resp.body);
 
   token = Token(data['access_token'], data['token_type'], data['expires_in'],
       data['refresh_token']);
 
+  print('token refreshed');
+  print('access_token: ${token.access_token}');
+  print('refresh_token: ${token.refresh_token}');
   Timer(Duration(seconds: token.expires_in), refreshToken);
 }
 
