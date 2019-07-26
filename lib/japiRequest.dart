@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'irm_auth.dart';
 
-//ignore_for_file: missing_return
-
 final String serverUrl = 'https://xdsserver-dev.irm.kr/XDSServer/api';
 final String url = 'xdsserver-dev.irm.kr';
 

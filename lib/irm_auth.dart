@@ -6,7 +6,6 @@ import 'japiRequest.dart';
 
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: camel_case_types
-// ignore_for_file: missing_return
 
 Token token = Token("", "", 0, ""); //token declaration and init
 User_Info userinfo = User_Info("", ""); //for get userinfo using Oauth
