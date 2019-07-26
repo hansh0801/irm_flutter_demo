@@ -29,6 +29,23 @@ class _New_PatientState extends State<New_Patient> {
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   List<Group> grouplist = [];
   String _currentGroup;
+  DateTime date = new DateTime.now();
+  TimeOfDay time = new TimeOfDay.now();
+
+  Future<Null> selectDate(BuildContext context) async{
+    final DateTime picked = await showDatePicker(
+        context: context, initialDate: date, firstDate: new DateTime(1960), lastDate: new DateTime(2020));
+    if(picked != null && picked!=date){
+      print("date selected:${date.toString()}");
+      setState((){
+        date = picked;
+
+
+      });
+
+    }
+  }
+
 
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
@@ -71,8 +88,10 @@ class _New_PatientState extends State<New_Patient> {
       'vgroup_key': '${currentgroupkey.vgroup_key}',
       'patient_id_value': '${text_patient_id_value.text}',
       'patient_name': '${text_patient_name.text}',
-      'patient_sex': '$patient_sex',
-      'patient_birth_dttm': '${text_patient_birth_dttm.text}',
+
+      'patient_sex': '${patient_sex}',
+      'patient_birth_dttm': date.toString(),
+
       'patient_phone': '${text_patient_phone.text}',
       'patient_address': '${text_patient_address.text}',
       'patient_guardian': '${text_patient_guardian.text}',
@@ -150,35 +169,36 @@ class _New_PatientState extends State<New_Patient> {
           DataRow(cells: <DataCell>[
             DataCell(Text("patient_sex")),
             DataCell(
-              Row(
-                ///라디오 버튼 사용
-                children: <Widget>[
-                  Text('M'),
-                  Radio(
-                    value: 0,
-                    groupValue: radioValue,
-                    onChanged: handleRadioValueChange,
-                  ),
-                  Text('F'),
-                  Radio(
-                    value: 1,
-                    groupValue: radioValue,
-                    onChanged: handleRadioValueChange,
-                  ),
-                ],
+              Container(
+                child: Row(
+                  ///라디오 버튼 사용
+                  children: <Widget>[
+                    Text('M'),
+                    Radio(
+                      value: 0,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                    Text('F'),
+                    Radio(
+                      value: 1,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                  ],
+                ),
               ),
             ),
           ]),
           DataRow(cells: <DataCell>[
             DataCell(Text("patient_birth_dttm")),
             DataCell(
-              TextFormField(
-                controller: text_patient_birth_dttm,
-                decoration: new InputDecoration.collapsed(
-                  hintText: "patient_birth_dttm",
-                ),
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.text,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  new Text("date:${date.toString().substring(0,10)}"),
+                  new IconButton(icon: Icon(Icons.calendar_today), onPressed:(){selectDate(context);}, )
+                ],
               ),
             ),
           ]),
@@ -231,8 +251,8 @@ class _New_PatientState extends State<New_Patient> {
       appBar: new AppBar(title: new Text("New Patient"), actions: <Widget>[]),
       body: Container(
           child: SingleChildScrollView(
-            child: Center(
-        child: Padding(
+        child: Center(
+          child: Padding(
             padding: const EdgeInsets.all(7.0),
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -269,9 +289,9 @@ class _New_PatientState extends State<New_Patient> {
                 ),
               ],
             ),
+          ),
         ),
-      ),
-          )),
+      )),
     );
   }
 }
