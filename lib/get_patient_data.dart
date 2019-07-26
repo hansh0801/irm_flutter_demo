@@ -79,7 +79,7 @@ Future<Uint8List> getPatientPhoto(patient_key) async {
 
 ///환자 정보 수정
 ///input: patient's data
-///output:
+///output: json
 Future putPatientData(patient_key, patient_name, patient_sex, patient_birth_dttm,
 patient_phone, patient_address, patient_guardian) async{
   var queryParameters = {
@@ -101,14 +101,24 @@ patient_phone, patient_address, patient_guardian) async{
   return result;
 }
 
-Future deletePatientPhoto(patient_key) async{
+
+///환자 삭제
+///input: patient_key LIST
+///{"1234","123","235","456"}
+Future delPatient(List patient_key) async{
   var result;
+  String patientList = '{';
+  patientList += patient_key.join(',');
+  patientList += '}';
 
   var queryParameters = {
-    'patient_key' : '$patient_key'
+    'patient_key_list' : '$patientList',
+    'permanent' : 'true',
+    'cascade' : 'true'
   };
 
   result = await deletePatient(queryParameters);
+  print(result);
 
   return result;
 }

@@ -85,13 +85,24 @@ Future<Map> getPatientSearch(queryParameters) async {
 ///     status_code 반환
 Future postPatientCreate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
-  http.Response resp = await http.post(uri, headers: {
-    'Accept': 'text/html',
-    'Content-Type' : 'application/x-www-form-urlencoded',
-    'Authorization': 'Bearer ${token.access_token}',
-  }, body:
+  http.Response resp;
+
+  while(true){
+    resp = await http.post(uri, headers: {
+      'Accept': 'text/html',
+      'Content-Type' : 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ${token.access_token}',
+    }, body:
     queryParameters,
-  );
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
 
   return resp.statusCode;
 }

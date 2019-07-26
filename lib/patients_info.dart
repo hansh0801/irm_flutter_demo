@@ -140,9 +140,7 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
   int calculateAge(String birthString) {
     if (birthString == null) return 0;
     DateTime birthDate = DateTime.parse(birthString); //스트링을 알아서 변환해줌
-    print(birthDate);
     DateTime currentDate = DateTime.now();
-    print(currentDate);
     int age = currentDate.year - birthDate.year;
     int month1 = currentDate.month;
     int month2 = birthDate.month;
