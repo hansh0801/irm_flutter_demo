@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'japiRequest.dart';
+import 'login_page.dart';
 
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: camel_case_types
@@ -60,6 +61,12 @@ Future refreshToken() async {
     'refresh_token': '${token.refresh_token}',
   });
 
+  if(resp.statusCode != 200){
+    print(resp.statusCode);
+    print('refresh token 실패');
+    return;
+  }
+
   print('refresh ${resp.statusCode}');
 
   var data = json.decode(resp.body);
@@ -70,7 +77,7 @@ Future refreshToken() async {
   print('token refreshed');
   print('access_token: ${token.access_token}');
   print('refresh_token: ${token.refresh_token}');
-  Timer(Duration(seconds: token.expires_in), refreshToken);
+  Timer(Duration(seconds: token.expires_in ?? 5), refreshToken);
 }
 
 Future<Null> logout() async {
