@@ -121,6 +121,9 @@ class _New_PatientState extends State<New_Patient> {
         case 1:
           patient_sex = 'F';
           break;
+        case 2:
+          patient_sex = 'O';
+          break;
       }
     });
   }
@@ -183,6 +186,12 @@ class _New_PatientState extends State<New_Patient> {
                     Text('F'),
                     Radio(
                       value: 1,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                    Text('O'),
+                    Radio(
+                      value: 2,
                       groupValue: radioValue,
                       onChanged: handleRadioValueChange,
                     ),
