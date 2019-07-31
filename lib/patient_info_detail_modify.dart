@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
-import 'patients_info_detailpage.dart';
 import 'get_patient_data.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flushbar/flushbar_helper.dart';
-import 'package:flutter/services.dart';
 
-Patientlist return_patientinfo;
-String name, sex, birth, phone, address, guardian;
+//ignore_for_file: camel_case_types
+//ignore_for_file: non_constant_identifier_names
+
 
 class InfoModify extends StatefulWidget {
   final Patientlist patientinfo;
@@ -19,24 +17,44 @@ class InfoModify extends StatefulWidget {
 }
 
 class _InfoModifyState extends State<InfoModify> {
-  DateTime date = new DateTime.now();
+  Patientlist return_patientinfo;
+  String name, birth, phone, address, guardian;
+  DateTime date;
   TimeOfDay time = new TimeOfDay.now();
+  var radioValue = 0;
+  String sex = 'M';
 
-  Future<Null> selectDate(BuildContext context) async{
+  Future<Null> selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-        context: context, initialDate: date, firstDate: new DateTime(1960), lastDate: new DateTime(2020));
-    if(picked != null && picked!=date){
-      print("date selected:${date.toString()}");
-      setState((){
+        context: context,
+        initialDate: DateTime.parse(widget.patientinfo.patient_birth_dttm),
+        firstDate: new DateTime(1960),
+        lastDate: new DateTime(2020));
+    if (picked != null && picked != date) {
+      print("date selected:${picked.toString()}");
+      setState(() {
         date = picked;
-
-
       });
-
     }
   }
 
+  void handleRadioValueChange(value) {
+    setState(() {
+      radioValue = value;
 
+      switch (radioValue) {
+        case 0:
+          sex = 'M';
+          break;
+        case 1:
+          sex = 'F';
+          break;
+        case 2:
+          sex = 'O';
+          break;
+      }
+    });
+  }
 
   Widget PatientData() => DataTable(
         columns: <DataColumn>[
@@ -55,7 +73,8 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("Name")),
             DataCell(
-              Container(width: 200,
+              Container(
+                width: 200,
                 child: TextFormField(
                   decoration: InputDecoration(),
                   initialValue: widget.patientinfo.patient_name,
@@ -74,17 +93,29 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("patient sex")),
             DataCell(
-              Container(width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_sex,
-                  onSaved: (input) => sex = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
+              Container(
+                child: Row(
+                  ///라디오 버튼 사용
+                  children: <Widget>[
+                    Text('M'),
+                    Radio(
+                      value: 0,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                    Text('F'),
+                    Radio(
+                      value: 1,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                    Text('O'),
+                    Radio(
+                      value: 2,
+                      groupValue: radioValue,
+                      onChanged: handleRadioValueChange,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -92,14 +123,19 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("Birth")),
             DataCell(
-              Container(width: 200,
+              Container(
+                width: 200,
                 child: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Text("picked date:${date.toString().substring(0,10)}"),
-                    new IconButton(icon: Icon(Icons.calendar_today), onPressed:(){selectDate(context);}, )
+                    new Text("picked date:${widget.patientinfo.patient_birth_dttm.substring(0, 10)}"),
+                    new IconButton(
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: () {
+                        selectDate(context);
+                      },
+                    )
                   ],
-
                 ),
               ),
             ),
@@ -107,7 +143,8 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("Phone")),
             DataCell(
-              Container(width: 200,
+              Container(
+                width: 200,
                 child: TextFormField(
                   decoration: InputDecoration(),
                   initialValue: widget.patientinfo.patient_phone,
@@ -125,7 +162,8 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("Address")),
             DataCell(
-              Container(width: 200,
+              Container(
+                width: 200,
                 child: TextFormField(
                   decoration: InputDecoration(),
                   initialValue: widget.patientinfo.patient_address,
@@ -143,7 +181,8 @@ class _InfoModifyState extends State<InfoModify> {
           DataRow(cells: <DataCell>[
             DataCell(Text("Guardian")),
             DataCell(
-              Container(width: 200,
+              Container(
+                width: 200,
                 child: TextFormField(
                   decoration: InputDecoration(),
                   initialValue: widget.patientinfo.patient_guardian,
@@ -168,7 +207,6 @@ class _InfoModifyState extends State<InfoModify> {
     //return_patientinfo = widget.patientinfo ;
 
     return Scaffold(
-
       appBar: new AppBar(
         title: Text("modify"),
       ),
@@ -185,7 +223,7 @@ class _InfoModifyState extends State<InfoModify> {
                         SizedBox(
                           height: 50,
                         ),
-                        SizedBox(height:380,width: 500,child: PatientData()),
+                        SizedBox(height: 380, width: 500, child: PatientData()),
                         SizedBox(
                           height: 50,
                         ),
@@ -211,77 +249,82 @@ class _InfoModifyState extends State<InfoModify> {
                                               child: Text("No")),
                                           new FlatButton(
                                               onPressed: () async {
-
                                                 formKey.currentState.save();
-                                                return_patientinfo = Patientlist(
-                                                    widget.patientinfo.vgroup_key,
-                                                    widget
-                                                        .patientinfo.patient_key,
-                                                    widget.patientinfo
-                                                        .patient_id_value,
-                                                    name,
-                                                    sex,
-                                                    address,
-                                                    date.toString(),
-                                                    guardian,
-                                                    phone);
-                                                var result =await putPatientData(
-                                                    return_patientinfo
-                                                        .patient_key,
-                                                    return_patientinfo
-                                                        .patient_name,
-                                                    return_patientinfo
-                                                        .patient_sex,
-                                                    return_patientinfo
-                                                        .patient_birth_dttm,
-                                                    return_patientinfo
-                                                        .patient_phone,
-                                                    return_patientinfo
-                                                        .patient_address,
-                                                    return_patientinfo
-                                                        .patient_guardian);
+                                                return_patientinfo =
+                                                    Patientlist(
+                                                        widget.patientinfo
+                                                            .vgroup_key,
+                                                        widget.patientinfo
+                                                            .patient_key,
+                                                        widget.patientinfo
+                                                            .patient_id_value,
+                                                        name,
+                                                        sex,
+                                                        address,
+                                                        date.toString(),
+                                                        guardian,
+                                                        phone);
+                                                var result =
+                                                    await putPatientData(
+                                                        return_patientinfo
+                                                            .patient_key,
+                                                        return_patientinfo
+                                                            .patient_name,
+                                                        return_patientinfo
+                                                            .patient_sex,
+                                                        return_patientinfo
+                                                            .patient_birth_dttm,
+                                                        return_patientinfo
+                                                            .patient_phone,
+                                                        return_patientinfo
+                                                            .patient_address,
+                                                        return_patientinfo
+                                                            .patient_guardian);
                                                 print(result);
 
-                                                if(result["status_code"]==200){
-
-
+                                                if (result["status_code"] ==
+                                                    200) {
                                                   Flushbar(
-                                                    flushbarPosition: FlushbarPosition.BOTTOM,
-                                                    message: "Edit Request Success! Return To Main Page",
+                                                    flushbarPosition:
+                                                        FlushbarPosition.BOTTOM,
+                                                    message:
+                                                        "Edit Request Success! Return To Main Page",
                                                     icon: Icon(
                                                       Icons.info_outline,
                                                       size: 28.0,
                                                       color: Colors.blueAccent,
                                                     ),
-                                                    backgroundColor: Colors.blueAccent,
-                                                    duration: Duration(seconds: 2),
-                                                    leftBarIndicatorColor: Colors.blueAccent,
-
-                                                  )
-                                                    ..show(context).then((r)=> Navigator.popUntil(context, ModalRoute.withName('patients_info')));
-
-
-                                                }
-                                                else{
+                                                    backgroundColor:
+                                                        Colors.blueAccent,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    leftBarIndicatorColor:
+                                                        Colors.blueAccent,
+                                                  )..show(context).then((r) =>
+                                                      Navigator.popUntil(
+                                                          context,
+                                                          ModalRoute.withName(
+                                                              'patients_info')));
+                                                } else {
                                                   Flushbar(
-                                                    flushbarPosition: FlushbarPosition.BOTTOM,
-                                                    message: "Request failed! check out what you did",
+                                                    flushbarPosition:
+                                                        FlushbarPosition.BOTTOM,
+                                                    message:
+                                                        "Request failed! check out what you did",
                                                     icon: Icon(
                                                       Icons.info_outline,
                                                       size: 28.0,
                                                       color: Colors.redAccent,
                                                     ),
-                                                    backgroundColor: Colors.redAccent,
-                                                    duration: Duration(seconds: 3),
-                                                    leftBarIndicatorColor: Colors.redAccent,
-
-                                                  )
-                                                    ..show(context).then((r)=>  Navigator.pop(context));
-
-
-
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                    duration:
+                                                        Duration(seconds: 3),
+                                                    leftBarIndicatorColor:
+                                                        Colors.redAccent,
+                                                  )..show(context).then((r) =>
+                                                      Navigator.pop(context));
                                                 }
-
                                               },
                                               child: Text("Yes"))
                                         ],

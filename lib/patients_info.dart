@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'get_patient_data.dart';
 import 'patients_info_detailpage.dart';
 
-
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: camel_case_types
 List<DropdownMenuItem<String>> _dropDownMenuItems;
@@ -140,9 +139,7 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
   int calculateAge(String birthString) {
     if (birthString == null) return 0;
     DateTime birthDate = DateTime.parse(birthString); //스트링을 알아서 변환해줌
-    print(birthDate);
     DateTime currentDate = DateTime.now();
-    print(currentDate);
     int age = currentDate.year - birthDate.year;
     int month1 = currentDate.month;
     int month2 = birthDate.month;
@@ -239,7 +236,6 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                             child: Container(
                               decoration: BoxDecoration(),
                               child: ListTile(
-
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.0, vertical: 10.0),
                                 leading: Container(
@@ -259,22 +255,22 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                   ),
                                 ),
                                 title: new Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
-                                    Flexible(child:Text(snapshot.data[index].patient_name
-                                        .toString())),
-                                    Text(
-                                        snapshot.data[index].patient_sex
+                                    Flexible(
+                                        child: Text(snapshot
+                                            .data[index].patient_name
+                                            .toString())),
+                                    Text(snapshot.data[index].patient_sex
                                             .toString() +
                                         ' / ' +
                                         calculateAge(snapshot
-                                            .data[index].patient_birth_dttm)
+                                                .data[index].patient_birth_dttm)
                                             .toString())
-
                                   ],
-                                ) ,
-
+                                ),
                                 subtitle: Text(snapshot
                                     .data[index].patient_id_value
                                     .toString()),
@@ -284,8 +280,10 @@ class _PatientInfoHomePageState extends State<PatientInfoHomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DetailPage(
-                                            patientinfo:
-                                                snapshot.data[index]))),
+                                              patientinfo: snapshot.data[index],
+                                              groupName:
+                                                  currentgroupkey.vgroup_name,
+                                            ))),
                               ),
                             ),
                           );

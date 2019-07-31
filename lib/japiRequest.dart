@@ -85,13 +85,24 @@ Future<Map> getPatientSearch(queryParameters) async {
 ///     status_code 반환
 Future postPatientCreate(queryParameters) async {
   var uri = Uri.https(url, '/XDSServer/api/patient');
-  http.Response resp = await http.post(uri, headers: {
-    'Accept': 'text/html',
-    'Content-Type' : 'application/x-www-form-urlencoded',
-    'Authorization': 'Bearer ${token.access_token}',
-  }, body:
+  http.Response resp;
+
+  while(true){
+    resp = await http.post(uri, headers: {
+      'Accept': 'text/html',
+      'Content-Type' : 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ${token.access_token}',
+    }, body:
     queryParameters,
-  );
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
 
   return resp.statusCode;
 }
@@ -251,3 +262,81 @@ Future deletePatientRemovePhoto(accessToken, queryParameters) async {
 
   return response.statusCode;
 }
+
+///DCM 스터디 목록 가져오기
+///
+///
+Future getDcmStudySearch(queryParameters) async{
+  var uri = Uri.https(url, '/XDSServer/api/dcmstudy.w2ui', queryParameters);
+  http.Response resp;
+  var ret;
+
+  while(true){
+    resp = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer ${token.access_token}',
+      },
+    );
+
+    print('test');
+    print(uri);
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    print('test1');
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
+
+  print(ret);
+
+  return json.decode(ret);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
