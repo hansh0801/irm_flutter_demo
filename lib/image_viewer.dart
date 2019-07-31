@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'dart:async';
-
+import "dart:ui";
+import 'package:flutter/services.dart';
+import 'dart:io';
+import 'irm_auth.dart';
 
 class Image_Viewer extends StatefulWidget {
   @override
@@ -15,11 +18,19 @@ class _Image_ViewerState extends State<Image_Viewer> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   StreamSubscription<String> _onUrlChanged;
 
+  Future<String> evalJavascript(String code) async {
+    final res = await _channel.invokeMethod('eval', {'code': code});
+    return res;
+  }
+
+  final _channel = const MethodChannel('flutter_webview_plugin');
+
 
   @override
 
   void initState() {
-    super.initState();
+
+     _getcookies();
     _onUrlChanged = flutterWebviewPlugin.onUrlChanged.listen((String url) {
       if (mounted) {
         print("Current URL: $url");
@@ -27,9 +38,43 @@ class _Image_ViewerState extends State<Image_Viewer> {
           print("Current URL: $url");
           //Navigator.pushNamed(context, "make_form");
         }
-        //print("Current URL: $url");
+
       }
     });
+
+    print( _getcookies().toString());
+    super.initState();
+
+  }
+  Future _getcookies() async{
+    print("hello1");
+
+
+    await evalJavascript('document.cookie="Authority=manager"');
+    await evalJavascript('document.cookie="bestimage_dev_access_token=${token.access_token}"');
+
+    String cookiesString = await evalJavascript('document.cookie');
+    print("just inserted cookie is");
+    print(cookiesString.toString());
+    setState(() {
+
+    });
+
+
+    /* final cookies = <String, String>{};
+    if (cookiesString?.isNotEmpty == true) {
+      cookiesString.split(';').forEach((String cookie) {
+        final split = cookie.split('=');
+        cookies[split[0]] = split[1];
+      });
+    }
+    print(cookies);
+
+    return cookies;*/
+
+
+
+
 
   }
 
@@ -49,9 +94,17 @@ class _Image_ViewerState extends State<Image_Viewer> {
 
   Widget build(BuildContext context) {
     return WebviewScaffold(
-      appBar: new AppBar(title: Text("image viewer"),),
-      url: "https://bestimage-dev.irm.kr",
+      appBar: new AppBar(title: Text("image viewer"), actions: <Widget>[
+        IconButton(
+          icon: new Icon(Icons.info),
+          onPressed: (){ _getcookies(); },
+        )
+
+      ], ),
+      url: "https://bestimage-dev.irm.kr/m/m_main.html",
       withJavascript: true,
+      //clearCache: true,
+      //clearCookies: true,
 
       withZoom: true,
       withLocalStorage: true,
