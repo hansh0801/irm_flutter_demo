@@ -7,6 +7,7 @@ import 'patients_info.dart';
 import 'new_patient.dart';
 import 'make_form.dart';
 import 'image_viewer.dart';
+import 'patient_photo.dart';
 /////
 
 void main() {
@@ -36,6 +37,11 @@ void main() {
 
   router.define('make_form', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new Make_Form();
+  }));
+
+
+  router.define('patient_photo', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return new TakePictureScreen();
   }));
 
 
