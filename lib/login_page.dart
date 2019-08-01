@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:simple_auth/simple_auth.dart' as simpleAuth;
-import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import "package:http/http.dart" as http;
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-
-import 'home_page.dart';
-
 import 'irm_auth.dart';
-
 
 class MainLoginPage extends StatefulWidget {
   @override
@@ -21,7 +14,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      //navigatorKey: alice.getNavigatorKey(),
       debugShowCheckedModeBanner: false, //for keyboard layout error handling
       title: "IRM Test App",
       theme: new ThemeData(
@@ -32,71 +24,44 @@ class _MainLoginPageState extends State<MainLoginPage> {
   }
 }
 
-final IRMAuth irmApi = new IRMAuth("FRONT-VL Dev04", "front-vl-dev04",
-    "front-vl-dev04-secret", "http://localhost:8080"); // for Oauth api information
-
 class LoginPage extends StatefulWidget {
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-   //GlobalObjectKey<ScaffoldState> _scaffoldKey;
   @override
-  /*initState(){
-    super.initState();
-    _scaffoldKey = new GlobalObjectKey<ScaffoldState>(1);
-
-
-  }*/
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-
-     // key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
-      //appBar: new AppBar(title: new Text("IRM Test app")),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
-
             children: buildSubmitButtons()),
-//            buildSubmitButtons()
       ),
     );
   }
 
-  Future<Null> login() async { //login
+  Future<Null> login() async {
     await getToken();
     await getUserInfo();
+    getGroupinfo();
 
-    print(token.access_token);
-    // getUserInfo();
+    Timer(Duration(seconds: token.expires_in), refreshToken);
 
-    Navigator.pushNamed(context, 'home_page',);
-
-
-
-
-
-    //print(token);
-    //print(userinfo);
+    Navigator.pushNamed(
+      context,
+      'home_page',
+    );
   }
 
-  List<Widget> buildSubmitButtons() { //buildsubmitbuttons
+  List<Widget> buildSubmitButtons() {
     return [
       Image.asset(
         "images/irm_logo.png",
         width: 300,
         height: 100,
-        //fit: BoxFit.cover,
       ),
-      /*SizedBox(
-        height: 30.0,
-      ),*/
       new RaisedButton(
         child: new Text(
           "login with IRM Account",
@@ -110,18 +75,17 @@ class _LoginPageState extends State<LoginPage> {
       SizedBox(
         height: 5.0,
       ),
-
     ];
   }
 
-  Future<Token> getToken() async { //gettoken
+  Future getToken() async {
     String url =
-        'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken&state=xyz';
+        'https://oauth2-dev.irm.kr/AuthServer/web/authorize?response_type=code&client_id=front-vl-dev04&redirect_uri=http%3A%2F%2Flocalhost%3A8080&scope=refreshToken';
 
     final FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.launch(url /*, clearCache: true, clearCookies: true*/);
     print("not closed");
-    Stream<String> onCode = await server(); //
+    Stream<String> onCode = await server();
     final String code = await onCode.first;
 
     webviewPlugin.close();
@@ -142,17 +106,17 @@ class _LoginPageState extends State<LoginPage> {
         "code": code,
         "grant_type": "authorization_code"
       },
-    ).then((response) {
-      var temp_token = json.decode(response.body);
-      token = Token(temp_token['access_token'], temp_token['token_type'],
-          temp_token['expires_in'], code);
+    );
 
-      print('token is');
-      print(token.access_token);
-    });
+    var tempToken = json.decode(response.body);
+
+    token = Token(tempToken['access_token'], tempToken['token_type'],
+        tempToken['expires_in'], tempToken['refresh_token']);
+
+    print('token is');
+    print('access_token: ${token.access_token}');
+    print('refresh_token: ${token.refresh_token}');
 
     print(token.token_type);
-
-   // return new Token.fromMap(json.decode(response.body));
   }
 }

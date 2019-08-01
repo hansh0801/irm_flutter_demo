@@ -3,13 +3,21 @@ import 'irm_auth.dart';
 import 'login_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'patients_info.dart';
+import 'get_patient_data.dart';
+import 'dart:io';
+import "package:flutter/services.dart";
+import 'drawer.dart';
 
 class Home_Page extends StatefulWidget {
+
+
+
   @override
   _Home_PageState createState() => _Home_PageState();
 }
 
 class _Home_PageState extends State<Home_Page> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   Material myItems(
       IconData icon, String heading, int color, String navigateto) {
     return Material(
@@ -20,10 +28,12 @@ class _Home_PageState extends State<Home_Page> {
         child: Center(
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(
+              currentgroupkey =Group(patient_group["records"][0]["vgroup_key"], patient_group["records"][0]["vgroup_name"]);
+                  Navigator.pushNamed(
                 context,
                 navigateto,
               );
+
             },
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -71,8 +81,33 @@ class _Home_PageState extends State<Home_Page> {
     //home page layout
     {
       return WillPopScope(
-        onWillPop: () => Future.value(false),
+
+        onWillPop: () {
+          return showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Confirm Exit"),
+                  content: Text("are you sure you want to exit?"),
+                  actions: <Widget>[
+                    new GestureDetector(
+                      onTap: () => Navigator.of(context).pop(false),
+                      child: roundedButton("No", const Color(0xff216bd6),
+                          const Color(0xFFFFFFFF)),
+                    ),
+                    new GestureDetector(
+                      onTap:  ()async => await SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+                      child: roundedButton(" Yes ", const Color(0xff216bd6),
+                          const Color(0xFFFFFFFF)),
+                    ),
+
+                  ],
+                );
+              });
+        },
         child: new Scaffold(
+          key: _key,
           appBar: new AppBar(
             title: new Text("IRM Test APP"),
             actions: <Widget>[
@@ -87,20 +122,7 @@ class _Home_PageState extends State<Home_Page> {
                   })
             ],
           ),
-          drawer: new Drawer(
-            child: ListView(
-              children: <Widget>[
-                new UserAccountsDrawerHeader(
-                  accountName: new Text(userinfo.username),
-                  accountEmail: new Text(userinfo.client_id),
-                  currentAccountPicture: new CircleAvatar(
-                    backgroundImage: new NetworkImage(
-                        "http://extmovie.maxmovie.com/xe/files/attach/images/174/863/001/009/fbe5e526bf8e5f38c75ab4aa68bbecea.jpg"),
-                  ),
-                )
-              ],
-            ),
-          ),
+           drawer: buildDrawer(),
           body: new Container(
               child: StaggeredGridView.count(
             crossAxisCount: 2,
@@ -111,7 +133,7 @@ class _Home_PageState extends State<Home_Page> {
               myItems(Icons.people, "patients", 0xffed622b, 'patients_info'),
               myItems(Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
               myItems(Icons.format_list_bulleted, "make form", 0xff216bd6, 'make_form'),
-              myItems(Icons.timeline, "medical record", 0xff702670, 'medical_record'),
+              myItems(Icons.timeline, "Image Viewer", 0xff702670, 'image_viewer'),
             ],
             staggeredTiles: [
               StaggeredTile.extent(2, 150.0),
@@ -124,4 +146,29 @@ class _Home_PageState extends State<Home_Page> {
       );
     }
   }
+}
+
+
+Widget roundedButton(String buttonLabel, Color bgColor, Color textColor) {
+  var loginBtn = new Container(
+    padding: EdgeInsets.all(5.0),
+    alignment: FractionalOffset.center,
+    decoration: new BoxDecoration(
+      color: bgColor,
+      borderRadius: new BorderRadius.all(const Radius.circular(10.0)),
+      boxShadow: <BoxShadow>[
+        BoxShadow(
+          color: const Color(0xFF696969),
+          offset: Offset(1.0, 6.0),
+          blurRadius: 0.001,
+        ),
+      ],
+    ),
+    child: Text(
+      buttonLabel,
+      style: new TextStyle(
+          color: textColor, fontSize: 20.0, fontWeight: FontWeight.bold),
+    ),
+  );
+  return loginBtn;
 }

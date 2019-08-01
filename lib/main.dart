@@ -6,7 +6,7 @@ import 'home_page.dart';
 import 'patients_info.dart';
 import 'new_patient.dart';
 import 'make_form.dart';
-import 'medical_record.dart';
+import 'image_viewer.dart';
 /////
 
 void main() {
@@ -29,8 +29,8 @@ void main() {
   }));
 
 
-  router.define('medical_record', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    return new Medical_Record();
+  router.define('image_viewer', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return new Image_Viewer();
   }));
 
 
