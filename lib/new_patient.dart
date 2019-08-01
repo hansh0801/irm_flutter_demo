@@ -137,10 +137,12 @@ class _New_PatientState extends State<New_Patient> {
           DataRow(cells: <DataCell>[
             DataCell(Text("vgroup_key")),
             DataCell(
-              DropdownButton(
-                value: _currentGroup,
-                items: _dropDownMenuItems,
-                onChanged: changedDropDownItem,
+              Container(width: 200,
+                child: DropdownButton(
+                  value: _currentGroup,
+                  items: _dropDownMenuItems,
+                  onChanged: changedDropDownItem,
+                ),
               ),
             ),
           ]),
