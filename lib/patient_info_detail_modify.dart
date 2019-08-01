@@ -6,7 +6,6 @@ import 'package:flushbar/flushbar.dart';
 //ignore_for_file: camel_case_types
 //ignore_for_file: non_constant_identifier_names
 
-
 class InfoModify extends StatefulWidget {
   final Patientlist patientinfo;
 
@@ -19,21 +18,26 @@ class InfoModify extends StatefulWidget {
 class _InfoModifyState extends State<InfoModify> {
   Patientlist return_patientinfo;
   String name, birth, phone, address, guardian;
-  DateTime date;
-  TimeOfDay time = new TimeOfDay.now();
+  DateTime date = DateTime.now();
   var radioValue = 0;
   String sex = 'M';
+  bool select = false;
 
   Future<Null> selectDate(BuildContext context) async {
+    var initDate;
+    initDate = widget.patientinfo.patient_birth_dttm == null
+        ? DateTime.now()
+        : DateTime.parse(widget.patientinfo.patient_birth_dttm);
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.parse(widget.patientinfo.patient_birth_dttm),
+        initialDate: initDate,
         firstDate: new DateTime(1960),
         lastDate: new DateTime(2020));
     if (picked != null && picked != date) {
       print("date selected:${picked.toString()}");
       setState(() {
         date = picked;
+        select = true;
       });
     }
   }
@@ -128,7 +132,12 @@ class _InfoModifyState extends State<InfoModify> {
                 child: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Text("picked date:${widget.patientinfo.patient_birth_dttm.substring(0, 10)}"),
+                    new Text("picked date:" +
+                        (select
+                            ? date.toString().substring(0, 10)
+                            : widget.patientinfo.patient_birth_dttm
+                                    ?.substring(0, 10) ??
+                                DateTime.now().toString().substring(0, 10))),
                     new IconButton(
                       icon: Icon(Icons.calendar_today),
                       onPressed: () {
