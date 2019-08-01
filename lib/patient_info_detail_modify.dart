@@ -24,9 +24,13 @@ class _InfoModifyState extends State<InfoModify> {
   bool select = false;
 
   Future<Null> selectDate(BuildContext context) async {
+    var initDate;
+    initDate = widget.patientinfo.patient_birth_dttm == null
+        ? DateTime.now()
+        : DateTime.parse(widget.patientinfo.patient_birth_dttm);
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.parse(widget.patientinfo.patient_birth_dttm),
+        initialDate: initDate,
         firstDate: new DateTime(1960),
         lastDate: new DateTime(2020));
     if (picked != null && picked != date) {
@@ -131,7 +135,9 @@ class _InfoModifyState extends State<InfoModify> {
                     new Text("picked date:" +
                         (select
                             ? date.toString().substring(0, 10)
-                            : widget.patientinfo.patient_birth_dttm.substring(0,10))),
+                            : widget.patientinfo.patient_birth_dttm
+                                    ?.substring(0, 10) ??
+                                DateTime.now().toString().substring(0, 10))),
                     new IconButton(
                       icon: Icon(Icons.calendar_today),
                       onPressed: () {
