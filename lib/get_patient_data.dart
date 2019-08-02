@@ -148,7 +148,8 @@ Future dcmStudySearch({List vgroup_key_list, List user_key_list,
   }
 
   String searchValue = '''[
-      {"field" : "vgroup_key_list", "value": "{${currentgroupkey.vgroup_key}"}]''';
+      {"field" : "vgroup_key_list", "value": "{${currentgroupkey.vgroup_key}}"},
+      {"field" : "user_key_list", "value":"{40122}"}]''';
       //{"field" : "user_key_list", "value" : "{$userKeyList}"}
       //]''';
   // ignore: unnecessary_statements

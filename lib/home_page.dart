@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
-import 'login_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'patients_info.dart';
-import 'get_patient_data.dart';
-import 'dart:io';
 import "package:flutter/services.dart";
 import 'drawer.dart';
+import 'work_list.dart';
 
 class Home_Page extends StatefulWidget {
 
@@ -29,10 +26,12 @@ class _Home_PageState extends State<Home_Page> {
           child: InkWell(
             onTap: () {
               currentgroupkey =Group(patient_group["records"][0]["vgroup_key"], patient_group["records"][0]["vgroup_name"]);
-                  Navigator.pushNamed(
+
+              Navigator.of(context).pushNamed(navigateto);
+           /*   Navigator.pushNamed(
                 context,
                 navigateto,
-              );
+              );*/
 
             },
             child: Padding(
@@ -134,13 +133,16 @@ class _Home_PageState extends State<Home_Page> {
               myItems(Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
               myItems(Icons.format_list_bulleted, "make form", 0xff216bd6, 'make_form'),
               myItems(Icons.timeline, "Image Viewer", 0xff702670, 'image_viewer'),
-              myItems(Icons.accessibility_new, "PhotoTest", 0xff201042, 'patient_photo'),
+              myItems(Icons.accessibility_new, "Work List", 0xff201042, 'work_list'),
+              myItems(Icons.accessibility_new, "pickImage", 0xffff00ff, 'pick_image'),
+
             ],
             staggeredTiles: [
               StaggeredTile.extent(2, 150.0),
               StaggeredTile.extent(1, 150.0),
               StaggeredTile.extent(1, 150.0),
               StaggeredTile.extent(2, 150.0),
+              StaggeredTile.extent(1, 150),
               StaggeredTile.extent(1, 150),
             ],
           )),

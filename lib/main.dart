@@ -7,54 +7,55 @@ import 'patients_info.dart';
 import 'new_patient.dart';
 import 'make_form.dart';
 import 'image_viewer.dart';
-import 'patient_photo.dart';
+import 'pick_image.dart';
+import 'work_list.dart';
 /////
 
 void main() {
   Router router = new Router();
-  router.define('login_page', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('login_page', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new LoginPage();
   }));
 
-  router.define('home_page', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('home_page', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new Home_Page();
   }));
 
-  router.define('patients_info', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('patients_info', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new Patients_Info();
   }));
 
-
-  router.define('new_patient', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('new_patient', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new New_Patient();
   }));
 
-
-  router.define('image_viewer', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('image_viewer', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new Image_Viewer();
   }));
 
-
-  router.define('make_form', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+  router.define('make_form', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
     return new Make_Form();
   }));
 
-
-  router.define('patient_photo', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    return new TakePictureScreen();
+  router.define('pick_image', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return new Pick_Image();
   }));
 
-
-
+  router.define('work_list', handler: new Handler(
+      handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+    return new Work_List();
+  }));
 
   runApp(new MaterialApp(
       title: 'App',
       home: new LoginPage(),
       onGenerateRoute: router.generator // Use our Fluro routers for this app.
-  ));
-
-
+      ));
 }
-
-
-
