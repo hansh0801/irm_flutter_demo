@@ -146,13 +146,52 @@ Future dcmStudySearch({List vgroup_key_list, List author_user_key_list, patient_
 
   String searchValue = '''[
       {"field" : "vgroup_key_list", "value": "{${currentgroupkey.vgroup_key}}"},
-      {"field" : "user_key_list", "value":"{$userKey}"}]''';
+      {"field" : "user_key_list", "value":"{$userKey}"''';
 
-  
+
+  if(patient_key != null){
+    searchValue += ',{"field":"patient_key", "value":"{$patient_key}"}';
+  }
+
+  if(patient_id_value != null){
+    searchValue += ',{"field":"patient_id_value","value":"{$patient_id_value}"}';
+  }
+
+  if(patient_name != null){
+    searchValue += ',{"field":"patien_name","value":"{$patient_name}"}';
+  }
+
+  if(patient_sex != null){
+    searchValue += ',{"field":"patient_sex","value":"{$patient_sex}"}';
+  }
+
+  if(study_id != null){
+    searchValue += ',{"field":"study_id","value":"{$study_id}"}';
+  }
+
+  if(study_dttm_from != null){
+    searchValue += ',{"field":"study_dttm_from","value":"{$study_dttm_from}"}';
+  }
+
+  if(study_dttm_to != null){
+    searchValue += ',{"field":"study_dttm_to","value":"{$study_dttm_to}"}';
+  }
+
+  if(study_desc != null){
+    searchValue += ',{"field":"study_desc","value';
+  }
+
+
+
+  searchValue += '}]';
+
+  print(patient_key);
 
   var queryParameters = {
     'search' : '$searchValue'
   };
+
+  print(queryParameters);
 
   print('쿼리파라미터 $queryParameters');
   var result = await getDcmStudySearch(queryParameters);

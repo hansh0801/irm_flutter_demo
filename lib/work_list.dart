@@ -5,7 +5,6 @@ import 'get_patient_data.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutter/services.dart';
 
-
 String _currentGroup;
 List<DropdownMenuItem<String>> _dropDownMenuItems;
 List<Group> grouplist = [];
@@ -16,9 +15,6 @@ Future<String> evalJavascript(String code) async {
 }
 
 final _channel = const MethodChannel('flutter_webview_plugin');
-
-final TextEditingController _textEditingController =
-    new TextEditingController();
 
 Future getDcmList(int currentgroupkey) async {
   List vgroupKeyList = [currentgroupkey];
@@ -111,20 +107,6 @@ class _Work_InfoState extends State<Work_Info> {
           children: <Widget>[
             SizedBox(
               height: 20.0,
-              /*        child:  DataTable(
-                  rows: [],
-                  columns: [
-                    DataColumn(
-                      label: Text('Column1'),
-                    ),
-                    DataColumn(
-                      label: Text('Column2'),
-                    ),
-                    DataColumn(
-                      label: Text('Column3'),
-                    ),
-                  ],
-                ),*/
             ),
             Flexible(
               child: Padding(
@@ -145,8 +127,6 @@ class _Work_InfoState extends State<Work_Info> {
             child: FutureBuilder(
                 future: getDcmList(currentgroupkey.vgroup_key),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-
-
                   print('snapshotdata ${snapshot.data}');
                   if (snapshot.data == null) {
                     return Container(
@@ -155,36 +135,24 @@ class _Work_InfoState extends State<Work_Info> {
                       size: 50,
                     ));
                   } else {
-                    ///여기부터 리스트
                     return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-
-
-                          Future javaFunc() async{
+                          Future javaFunc() async {
                             print('javaFunc');
 
-                            await evalJavascript('document.cookie="Authority=manager"');
-                            await evalJavascript('document.cookie="bestimage_dev_access_token=${token.access_token}"');
+                            await evalJavascript(
+                                'document.cookie="Authority=manager"');
+                            await evalJavascript(
+                                'document.cookie="bestimage_dev_access_token=${token.access_token}"');
 
-/*
-                            await evalJavascript('document.getElementById("cIdInput").value = ${snapshot.data[index]
-                            ['patient_id']['id_value']};');
-                            await evalJavascript('document.getElementById("cNameInput").value = ${snapshot.data[index]['patient_name']};');
-                            await evalJavascript('document.getElementById("cDateInput").value = ${snapshot.data[index]['study_dttm']};');
-                            await evalJavascript('document.getElementById("cModalInput").value = ${snapshot.data[index]['modality_list'][0]};');
-*/
-
-
-                            String cookies = await evalJavascript('document.cookie');
+                            String cookies =
+                                await evalJavascript('document.cookie');
                             print('cookie: $cookies');
 
                             await evalJavascript('location.reload();');
                             print('새로고침');
                           }
-
-
-
 
                           return Card(
                             elevation: 8.0,
@@ -206,7 +174,7 @@ class _Work_InfoState extends State<Work_Info> {
                                       backgroundColor: Colors.yellowAccent,
                                       child: new Text(snapshot.data[index]
                                               ['patient_sex'] ??
-                                          "M")),
+                                          "null")),
                                 ),
                                 title: new Row(
                                   mainAxisAlignment:
@@ -227,26 +195,12 @@ class _Work_InfoState extends State<Work_Info> {
                                     )
                                   ],
                                 ),
-                                subtitle: Text(''),
+                                subtitle: Text(snapshot.data[index]
+                                        ['dcm_study_key']
+                                    .toString()),
                                 trailing: Icon(Icons.keyboard_arrow_right,
                                     color: Colors.black26, size: 30.0),
                                 onTap: () {
-                                  var parameters = {
-                                    'user_key': '',
-                                    'dcm_study_key': snapshot.data[index]
-                                        ['dcm_study_key'],
-                                    'vgroup_key': currentgroupkey.vgroup_key,
-                                    'patient_id': snapshot.data[index]
-                                        ['patient_id']['id_value'],
-                                  };
-
-                                  /*var uri = Uri.https(
-                                      "bestimage-dev.irm.kr",
-                                      "/m/m_subhtml/m_dicomview.html",
-                                      parameters);
-                                  print('uri $uri');
-                                  print('uri tostring ${uri.toString()}');*/
-
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -255,18 +209,19 @@ class _Work_InfoState extends State<Work_Info> {
                                                   title: Text("viewer"),
                                                   actions: <Widget>[
                                                     IconButton(
-                                                      icon:
-                                                          new Icon(Icons.info),
-                                                      onPressed: () {javaFunc();},
+                                                      icon: new Icon(
+                                                          Icons.announcement),
+                                                      onPressed: () {
+                                                        javaFunc();
+                                                      },
                                                     )
                                                   ],
                                                 ),
                                                 url:
                                                     'https://bestimage-dev.irm.kr/m/m_subhtml/m_dicomview.html'
-                                                        '?user_key=&dcm_study_key=${snapshot.data[index]['dcm_study_key']}&vgroup_key=${currentgroupkey.vgroup_key}&patient_id=${snapshot.data[index]['patient_id']['id_value']}',
+                                                    '?user_key=&dcm_study_key=${snapshot.data[index]['dcm_study_key']}&vgroup_key=${currentgroupkey.vgroup_key}'
+                                                    '&patient_id=${snapshot.data[index]['patient_id']['id_value']}',
                                                 withJavascript: true,
-                                                //clearCache: true,
-                                                //clearCookies: true,
                                                 withZoom: true,
                                                 withLocalStorage: true,
                                                 enableAppScheme: true,
@@ -277,31 +232,6 @@ class _Work_InfoState extends State<Work_Info> {
                               ),
                             ),
                           );
-
-
-                          /*         return DataTable(
-                             rows: [
-                               DataRow(
-                                 cells: [
-                                   DataCell(Text(snapshot.data[index]['patient_id']['id_value'])),
-                                   DataCell(Text(snapshot.data[index]['patient_name'] ?? 'null')),
-                                   DataCell(Text(snapshot.data[index]['patient_sex'] ?? 'null')),
-                                 ],
-                               ),
-                             ],
-                             columns: [
-                               DataColumn(
-                                 label: Text(snapshot.data.length.toString()),
-                               ),
-                               DataColumn(
-                                 label: Text(''),
-                               ),
-                               DataColumn(
-                                 label: Text(''),
-                               )
-                             ],
-                           );
-                           */
                         });
                   }
                 }),
@@ -311,4 +241,3 @@ class _Work_InfoState extends State<Work_Info> {
     );
   }
 }
-
