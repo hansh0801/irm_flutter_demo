@@ -127,8 +127,7 @@ Future delPatient(List patient_key) async{
 ///DCM 스터디 목록 가져오기
 ///
 ///
-Future dcmStudySearch({List vgroup_key_list, List user_key_list,
-  List author_user_key_list, patient_key, patient_id_value, patient_name,
+Future dcmStudySearch({List vgroup_key_list, List author_user_key_list, patient_key, patient_id_value, patient_name,
   patient_sex, study_id, study_dttm_from, study_dttm_to, study_desc, patient_age,
   accession_no, modality_list, offset, limit, sort_by, sort_dir}) async {
 
@@ -137,45 +136,40 @@ Future dcmStudySearch({List vgroup_key_list, List user_key_list,
     vgroupKeyList = '{' + vgroup_key_list?.join(',') + '}';
   }
 
-  String userKeyList = '';
-  if(user_key_list != null){
-    userKeyList = '{' + user_key_list?.join(',') + '}';
-  }
-
   String authorUserKeyList = '';
   if(author_user_key_list != null){
     authorUserKeyList = '{' + author_user_key_list?.join(',') + '}';
   }
 
+  var userKey = await userLookup();
+  print(userKey);
+
   String searchValue = '''[
       {"field" : "vgroup_key_list", "value": "{${currentgroupkey.vgroup_key}}"},
-      {"field" : "user_key_list", "value":"{40122}"}]''';
-      //{"field" : "user_key_list", "value" : "{$userKeyList}"}
-      //]''';
-  // ignore: unnecessary_statements
-  [{"field" : "user_key_list", "value" : "{$userKeyList}"}];
+      {"field" : "user_key_list", "value":"{$userKey}"}]''';
 
+  
 
-  /*
-    {"field" : "author_user_key_list",
-    "value" : "$authorUserKeyList"
-    }
-
-  }''';
-
-*/
   var queryParameters = {
     'search' : '$searchValue'
   };
 
-  print(queryParameters);
+  print('쿼리파라미터 $queryParameters');
   var result = await getDcmStudySearch(queryParameters);
  // print(result);
 
   return result;
 }
 
+///계정 정보 조회
+///
+///
+Future userLookup() async{
+  var result = await getUserLookup();
+  print(result);
 
+  return result['user']['user_key'];
+}
 
 
 

@@ -279,8 +279,6 @@ Future getDcmStudySearch(queryParameters) async{
       },
     );
 
-    print('test');
-    print(uri);
     if(resp.statusCode == 401){
       refreshToken();
     }
@@ -290,17 +288,46 @@ Future getDcmStudySearch(queryParameters) async{
   }
 
   if(resp.statusCode != 200){
-    print('test1');
     return {};
   }
 
   ret = utf8.decode(resp.bodyBytes);
 
-  print(ret);
-
   return json.decode(ret);
 }
 
+///계정 정보 조회
+///
+///
+Future getUserLookup() async{
+  var uri = Uri.https(url, '/XDSServer/api/user_myself');
+  http.Response resp;
+  var ret;
+
+  while(true){
+    resp = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer ${token.access_token}',
+      },
+    );
+
+    if(resp.statusCode == 401){
+      refreshToken();
+    }
+    else{
+      break;
+    }
+  }
+
+  if(resp.statusCode != 200){
+    return {};
+  }
+
+  ret = utf8.decode(resp.bodyBytes);
+
+  return json.decode(ret);
+}
 
 
 

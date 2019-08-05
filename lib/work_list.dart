@@ -161,21 +161,25 @@ class _Work_InfoState extends State<Work_Info> {
                         itemBuilder: (BuildContext context, int index) {
 
 
-
                           Future javaFunc() async{
                             print('javaFunc');
 
                             await evalJavascript('document.cookie="Authority=manager"');
                             await evalJavascript('document.cookie="bestimage_dev_access_token=${token.access_token}"');
 
+/*
                             await evalJavascript('document.getElementById("cIdInput").value = ${snapshot.data[index]
                             ['patient_id']['id_value']};');
                             await evalJavascript('document.getElementById("cNameInput").value = ${snapshot.data[index]['patient_name']};');
                             await evalJavascript('document.getElementById("cDateInput").value = ${snapshot.data[index]['study_dttm']};');
                             await evalJavascript('document.getElementById("cModalInput").value = ${snapshot.data[index]['modality_list'][0]};');
+*/
+
+
+                            String cookies = await evalJavascript('document.cookie');
+                            print('cookie: $cookies');
 
                             await evalJavascript('location.reload();');
-
                             print('새로고침');
                           }
 
@@ -258,7 +262,8 @@ class _Work_InfoState extends State<Work_Info> {
                                                   ],
                                                 ),
                                                 url:
-                                                    'https://bestimage-dev.irm.kr/m/m_subhtml/m_dicomview.html?user_key=&dcm_study_key=${snapshot.data[index]['dcm_study_key']}&vgroup_key=${currentgroupkey.vgroup_key}&patient_id=${snapshot.data[index]['patient_id']['id_value']}',
+                                                    'https://bestimage-dev.irm.kr/m/m_subhtml/m_dicomview.html'
+                                                        '?user_key=&dcm_study_key=${snapshot.data[index]['dcm_study_key']}&vgroup_key=${currentgroupkey.vgroup_key}&patient_id=${snapshot.data[index]['patient_id']['id_value']}',
                                                 withJavascript: true,
                                                 //clearCache: true,
                                                 //clearCookies: true,
