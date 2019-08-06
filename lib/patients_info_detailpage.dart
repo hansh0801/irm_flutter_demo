@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'irm_auth.dart';
 import 'patient_info_detail_modify.dart';
 
-var imagedata;
 
 class DetailPage extends StatefulWidget {
   final Patientlist patientinfo;
@@ -16,6 +15,8 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  var imagedata;
+
   Future getimage() async {
     imagedata = await getPatientPhoto(widget.patientinfo.patient_key);
     print(imagedata);
@@ -110,6 +111,7 @@ class _DetailPageState extends State<DetailPage> {
                   MaterialPageRoute(
                       builder: (context) => InfoModify(
                             patientinfo: widget.patientinfo,
+                        imageData: imagedata,
                           )));
             })
       ]),

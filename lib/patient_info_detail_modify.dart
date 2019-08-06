@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 import 'get_patient_data.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'japiRequest.dart';
 
 //ignore_for_file: camel_case_types
 //ignore_for_file: non_constant_identifier_names
 
 class InfoModify extends StatefulWidget {
   final Patientlist patientinfo;
+  var imageData;
 
-  InfoModify({Key key, this.patientinfo}) : super(key: key);
+  InfoModify({Key key, this.patientinfo, this.imageData}) : super(key: key);
 
   @override
   _InfoModifyState createState() => _InfoModifyState();
@@ -22,6 +27,71 @@ class _InfoModifyState extends State<InfoModify> {
   var radioValue = 0;
   String sex = 'M';
   bool select = false;
+  File imageFile;
+  bool choose = false;
+
+  openGallery(BuildContext context) async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState(() {
+      imageFile = picture;
+      if(picture != null){
+        choose = true;
+      }
+    });
+    Navigator.pop(context);
+  }
+
+  openCamera(BuildContext context) async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState(() {
+      imageFile = picture;
+      if(picture != null){
+        choose = true;
+      }
+    });
+    Navigator.pop(context);
+  }
+
+  Future<void> showChiceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("make a chice"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text("Gallary"),
+                    onTap: () {
+                      openGallery(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text("camera"),
+                    onTap: () {
+                      openCamera(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _decideImageview() {
+    if (imageFile == null) {
+      return Text("no image");
+    } else {
+      return Image.file(
+        imageFile,
+        width: 180,
+        height: 180,
+      );
+    }
+  }
 
   Future<Null> selectDate(BuildContext context) async {
     var initDate;
@@ -60,152 +130,172 @@ class _InfoModifyState extends State<InfoModify> {
     });
   }
 
-  Widget PatientData() => DataTable(
-        columns: <DataColumn>[
-          DataColumn(
-              label: Text(" Property"),
-              numeric: false,
-              onSort: (i, b) {},
-              tooltip: "irm company"),
-          DataColumn(
-              label: Text("Patient Data"),
-              numeric: false,
-              onSort: (i, b) {},
-              tooltip: "Patient data")
-        ],
-        rows: <DataRow>[
-          DataRow(cells: <DataCell>[
-            DataCell(Text("Name")),
-            DataCell(
-              Container(
-                width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_name,
-                  onSaved: (input) => name = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ),
-            // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("patient sex")),
-            DataCell(
-              Container(
-                child: Row(
-                  ///라디오 버튼 사용
-                  children: <Widget>[
-                    Text('M'),
-                    Radio(
-                      value: 0,
-                      groupValue: radioValue,
-                      onChanged: handleRadioValueChange,
-                    ),
-                    Text('F'),
-                    Radio(
-                      value: 1,
-                      groupValue: radioValue,
-                      onChanged: handleRadioValueChange,
-                    ),
-                    Text('O'),
-                    Radio(
-                      value: 2,
-                      groupValue: radioValue,
-                      onChanged: handleRadioValueChange,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("Birth")),
-            DataCell(
-              Container(
-                width: 200,
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Text("picked date:" +
-                        (select
-                            ? date.toString().substring(0, 10)
-                            : widget.patientinfo.patient_birth_dttm
-                                    ?.substring(0, 10) ??
-                                DateTime.now().toString().substring(0, 10))),
-                    new IconButton(
-                      icon: Icon(Icons.calendar_today),
-                      onPressed: () {
-                        selectDate(context);
-                      },
+  Widget PatientData() => Column(
+        children: <Widget>[
+          choose
+              ? Image.file(
+                  imageFile,
+                  height: 150,
+                )
+              : widget.imageData != null
+                  ? Image.memory(
+                      widget.imageData,
+                      height: 150,
                     )
-                  ],
+                  : Image.asset(
+                      "images/gray.png",
+                      height: 150,
+                    ),
+          DataTable(
+            columns: <DataColumn>[
+              DataColumn(
+                  label: Text("Property"),
+                  numeric: false,
+                  onSort: (i, b) {},
+                  tooltip: "irm company"),
+              DataColumn(
+                  label: Text("Patient Data"),
+                  numeric: false,
+                  onSort: (i, b) {},
+                  tooltip: "Patient data")
+            ],
+            rows: <DataRow>[
+              DataRow(cells: <DataCell>[
+                DataCell(Text("Name")),
+                DataCell(
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: InputDecoration(),
+                      initialValue: widget.patientinfo.patient_name,
+                      onSaved: (input) => name = input,
+                      validator: (input) {
+                        if (input.isEmpty) {
+                          return "Enter some Text";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("Phone")),
-            DataCell(
-              Container(
-                width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_phone,
-                  onSaved: (input) => phone = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
+                // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
+              ]),
+              DataRow(cells: <DataCell>[
+                DataCell(Text("patient sex")),
+                DataCell(
+                  Container(
+                    child: Row(
+                      ///라디오 버튼 사용
+                      children: <Widget>[
+                        Text('M'),
+                        Radio(
+                          value: 0,
+                          groupValue: radioValue,
+                          onChanged: handleRadioValueChange,
+                        ),
+                        Text('F'),
+                        Radio(
+                          value: 1,
+                          groupValue: radioValue,
+                          onChanged: handleRadioValueChange,
+                        ),
+                        Text('O'),
+                        Radio(
+                          value: 2,
+                          groupValue: radioValue,
+                          onChanged: handleRadioValueChange,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("Address")),
-            DataCell(
-              Container(
-                width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_address,
-                  onSaved: (input) => address = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
+              ]),
+              DataRow(cells: <DataCell>[
+                DataCell(Text("Birth")),
+                DataCell(
+                  Container(
+                    width: 200,
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        new Text("picked date:" +
+                            (select
+                                ? date.toString().substring(0, 10)
+                                : widget.patientinfo.patient_birth_dttm
+                                        ?.substring(0, 10) ??
+                                    DateTime.now()
+                                        .toString()
+                                        .substring(0, 10))),
+                        new IconButton(
+                          icon: Icon(Icons.calendar_today),
+                          onPressed: () {
+                            selectDate(context);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ]),
-          DataRow(cells: <DataCell>[
-            DataCell(Text("Guardian")),
-            DataCell(
-              Container(
-                width: 200,
-                child: TextFormField(
-                  decoration: InputDecoration(),
-                  initialValue: widget.patientinfo.patient_guardian,
-                  onSaved: (input) => guardian = input,
-                  validator: (input) {
-                    if (input.isEmpty) {
-                      return "Enter some Text";
-                    }
-                    return null;
-                  },
+              ]),
+              DataRow(cells: <DataCell>[
+                DataCell(Text("Phone")),
+                DataCell(
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: InputDecoration(),
+                      initialValue: widget.patientinfo.patient_phone,
+                      onSaved: (input) => phone = input,
+                      validator: (input) {
+                        if (input.isEmpty) {
+                          return "Enter some Text";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ]),
+              ]),
+              DataRow(cells: <DataCell>[
+                DataCell(Text("Address")),
+                DataCell(
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: InputDecoration(),
+                      initialValue: widget.patientinfo.patient_address,
+                      onSaved: (input) => address = input,
+                      validator: (input) {
+                        if (input.isEmpty) {
+                          return "Enter some Text";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ]),
+              DataRow(cells: <DataCell>[
+                DataCell(Text("Guardian")),
+                DataCell(
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: InputDecoration(),
+                      initialValue: widget.patientinfo.patient_guardian,
+                      onSaved: (input) => guardian = input,
+                      validator: (input) {
+                        if (input.isEmpty) {
+                          return "Enter some Text";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ]),
+            ],
+          ),
         ],
       );
 
@@ -218,6 +308,14 @@ class _InfoModifyState extends State<InfoModify> {
     return Scaffold(
       appBar: new AppBar(
         title: Text("modify"),
+        actions: <Widget>[
+          IconButton(
+            icon: new Icon(Icons.photo),
+            onPressed: () {
+              showChiceDialog(context);
+            },
+          )
+        ],
       ),
       body: new Container(
         child: SingleChildScrollView(
@@ -232,7 +330,8 @@ class _InfoModifyState extends State<InfoModify> {
                         SizedBox(
                           height: 50,
                         ),
-                        SizedBox(height: 380, width: 500, child: PatientData()),
+                        SizedBox(
+                            /*height: 380, width: 500,*/ child: PatientData()),
                         SizedBox(
                           height: 50,
                         ),
@@ -289,6 +388,16 @@ class _InfoModifyState extends State<InfoModify> {
                                                             .patient_address,
                                                         return_patientinfo
                                                             .patient_guardian);
+
+
+                                                var queryParameters = {
+                                                  'patient_key' : return_patientinfo.patient_key.toString(),
+                                                  'patient_photo' : base64Encode(imageFile.readAsBytesSync()),
+                                                  'photo_tag' : 'main'
+                                                };
+
+                                                putPatientSetPhoto(queryParameters);
+
                                                 print(result);
 
                                                 if (result["status_code"] ==
