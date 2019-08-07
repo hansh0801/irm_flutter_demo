@@ -3,7 +3,7 @@ import 'get_patient_data.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'irm_auth.dart';
 import 'patient_info_detail_modify.dart';
-
+import 'dart:typed_data';
 
 class DetailPage extends StatefulWidget {
   final Patientlist patientinfo;
@@ -111,7 +111,7 @@ class _DetailPageState extends State<DetailPage> {
                   MaterialPageRoute(
                       builder: (context) => InfoModify(
                             patientinfo: widget.patientinfo,
-                        imageData: imagedata,
+                            imageData: imagedata,
                           )));
             })
       ]),
@@ -138,11 +138,17 @@ class _DetailPageState extends State<DetailPage> {
                   );
                 } else {
                   return Container(
-                    child: new Image.memory(
-                      imagedata,
-                      height: 180,
-                      width: 180,
-                    ),
+                    child: snapshot.data.toString() !=
+                            Uint8List.fromList('null'.codeUnits).toString()
+                        ? new Image.memory(
+                            imagedata,
+                            height: 180,
+                            width: 180,
+                          )
+                        : Image.asset(
+                            "images/gray.png",
+                            height: 150,
+                          ),
                   );
                 }
               },

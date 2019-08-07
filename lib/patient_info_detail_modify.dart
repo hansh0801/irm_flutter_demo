@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'japiRequest.dart';
 
 //ignore_for_file: camel_case_types
@@ -31,10 +32,11 @@ class _InfoModifyState extends State<InfoModify> {
   bool choose = false;
 
   openGallery(BuildContext context) async {
+    print('asdf' + widget.imageData.toString());
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
     this.setState(() {
       imageFile = picture;
-      if(picture != null){
+      if (picture != null) {
         choose = true;
       }
     });
@@ -45,7 +47,7 @@ class _InfoModifyState extends State<InfoModify> {
     var picture = await ImagePicker.pickImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = picture;
-      if(picture != null){
+      if (picture != null) {
         choose = true;
       }
     });
@@ -79,18 +81,6 @@ class _InfoModifyState extends State<InfoModify> {
             ),
           );
         });
-  }
-
-  Widget _decideImageview() {
-    if (imageFile == null) {
-      return Text("no image");
-    } else {
-      return Image.file(
-        imageFile,
-        width: 180,
-        height: 180,
-      );
-    }
   }
 
   Future<Null> selectDate(BuildContext context) async {
@@ -137,7 +127,8 @@ class _InfoModifyState extends State<InfoModify> {
                   imageFile,
                   height: 150,
                 )
-              : widget.imageData != null
+              : widget.imageData.toString() !=
+                      Uint8List.fromList('null'.codeUnits).toString()
                   ? Image.memory(
                       widget.imageData,
                       height: 150,
@@ -389,14 +380,19 @@ class _InfoModifyState extends State<InfoModify> {
                                                         return_patientinfo
                                                             .patient_guardian);
 
-
                                                 var queryParameters = {
-                                                  'patient_key' : return_patientinfo.patient_key.toString(),
-                                                  'patient_photo' : base64Encode(imageFile.readAsBytesSync()),
-                                                  'photo_tag' : 'main'
+                                                  'patient_key':
+                                                      return_patientinfo
+                                                          .patient_key
+                                                          .toString(),
+                                                  'patient_photo': base64Encode(
+                                                      imageFile
+                                                          .readAsBytesSync()),
+                                                  'photo_tag': 'main'
                                                 };
 
-                                                putPatientSetPhoto(queryParameters);
+                                                putPatientSetPhoto(
+                                                    queryParameters);
 
                                                 print(result);
 

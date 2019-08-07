@@ -72,13 +72,13 @@ Future<Uint8List> getPatientPhoto(patient_key) async {
     'photo_tag': 'main',
   };
   var jsonData = await getPatientGetPhoto(queryParameters);
+  print(jsonData);
   String encoded = jsonData['patient_photo'];
-  if(encoded == null || encoded == "null"){
-    return null;
-  }
-  Uint8List bytes = base64.decode(encoded);
 
-  print('getpatientphoto $bytes');
+  if(encoded == "null")
+    return Uint8List.fromList(encoded.codeUnits);
+
+  Uint8List bytes = base64.decode(encoded);
 
   return bytes;
 }
