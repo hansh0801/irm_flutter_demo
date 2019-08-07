@@ -7,6 +7,7 @@ import 'patients_info.dart';
 import 'new_patient.dart';
 import 'make_form.dart';
 import 'image_viewer.dart';
+import 'package:flutter/services.dart';
 /////
 
 void main() {
@@ -39,15 +40,15 @@ void main() {
   }));
 
 
-
-
-  runApp(new MaterialApp(
-      title: 'App',
-      home: new LoginPage(),
-      onGenerateRoute: router.generator // Use our Fluro routers for this app.
-  ));
-
-
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
+  ).then((_){
+    runApp(new MaterialApp(
+        title: 'App',
+        home: new LoginPage(),
+        onGenerateRoute: router.generator // Use our Fluro routers for this app.
+    ));
+  });
 }
 
 

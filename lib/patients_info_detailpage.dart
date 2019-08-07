@@ -115,52 +115,56 @@ class _DetailPageState extends State<DetailPage> {
                           )));
             })
       ]),
-      body: Container(
-          child: Center(
-        child: new Column(
-          children: <Widget>[
-            FutureBuilder(
-              future: getimage(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                //print(snapshot.data);
-                if (snapshot.data == null) {
-                  return Container(
-                    child: Center(
-                        child: SizedBox(
-                      height: 180,
-                      width: 180,
+      body: SingleChildScrollView(
+        child: Container(
+            child: Center(
+          child: new Column(
+            children: <Widget>[
+              SizedBox(height: 60, ),
+              FutureBuilder(
+                future: getimage(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  //print(snapshot.data);
+                  if (snapshot.data == null) {
+                    return Container(
                       child: Center(
-                          child: SpinKitWave(
-                        color: Colors.lightBlueAccent,
-                        size: 50,
+                          child: SizedBox(
+                        height: 180,
+                        width: 180,
+                        child: Center(
+                            child: SpinKitWave(
+                          color: Colors.lightBlueAccent,
+                          size: 50,
+                        )),
                       )),
-                    )),
-                  );
-                } else {
-                  return Container(
-                    child: snapshot.data.toString() !=
-                            Uint8List.fromList('null'.codeUnits).toString()
-                        ? new Image.memory(
-                            imagedata,
-                            height: 180,
-                            width: 180,
-                          )
-                        : Image.asset(
-                            "images/gray.png",
-                            height: 150,
-                          ),
-                  );
-                }
-              },
-            ),
-            SizedBox(
-              width: 400,
-              height: 400,
-              child: PatientData(),
-            )
-          ],
-        ),
-      )),
+                    );
+                  } else {
+                    return Container(
+                      child: snapshot.data.toString() !=
+                              Uint8List.fromList('null'.codeUnits).toString()
+                          ? new Image.memory(
+                              imagedata,
+                              height: 180,
+                              //width: 180,
+                            )
+                          : Image.asset(
+                              "images/gray.png",
+                              height: 150,
+                            ),
+                    );
+                  }
+                },
+              ),
+              SizedBox(height: 40, ),
+              SizedBox(
+                width: 400,
+                height: 400,
+                child: PatientData(),
+              )
+            ],
+          ),
+        )),
+      ),
     );
   }
 }

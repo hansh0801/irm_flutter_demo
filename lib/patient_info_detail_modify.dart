@@ -120,23 +120,24 @@ class _InfoModifyState extends State<InfoModify> {
     });
   }
 
-  Widget PatientData() => Column(
+  Widget PatientData(BuildContext context) => Column(
         children: <Widget>[
-          choose
+          InkWell(child: choose
               ? Image.file(
-                  imageFile,
-                  height: 150,
-                )
+            imageFile,
+            height: 150,
+          )
               : widget.imageData.toString() !=
-                      Uint8List.fromList('null'.codeUnits).toString()
-                  ? Image.memory(
-                      widget.imageData,
-                      height: 150,
-                    )
-                  : Image.asset(
-                      "images/gray.png",
-                      height: 150,
-                    ),
+              Uint8List.fromList('null'.codeUnits).toString()
+              ? Image.memory(
+            widget.imageData,
+            height: 150,
+          )
+              : Image.asset(
+            "images/gray.png",
+            height: 150,
+          ),onTap: ()=>showChiceDialog(context),),
+
           DataTable(
             columns: <DataColumn>[
               DataColumn(
@@ -322,12 +323,12 @@ class _InfoModifyState extends State<InfoModify> {
                           height: 50,
                         ),
                         SizedBox(
-                            /*height: 380, width: 500,*/ child: PatientData()),
+                            /*height: 380, width: 500,*/ child: PatientData(context)),
                         SizedBox(
                           height: 50,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 30),
                           child: RaisedButton(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),
