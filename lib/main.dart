@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splashscreen/splashscreen.dart';
+
 import 'package:fluro/fluro.dart';
 import "package:irm_prototype1/login_page.dart";
 import 'home_page.dart';
