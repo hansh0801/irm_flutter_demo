@@ -75,7 +75,8 @@ class _Image_ViewerState extends State<Image_Viewer> {
         )
 
       ], ),
-      url: "https://bestimage-dev.irm.kr/m/m_main.html",
+     //url:'google.com',
+       url: "https://bestimage-dev.irm.kr/m/m_main.html",
       withJavascript: true,
       //clearCache: true,
       //clearCookies: true,
