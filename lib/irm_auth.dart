@@ -15,7 +15,7 @@ Group currentgroupkey;
 
 Future<Stream<String>> server() async {
   final StreamController<String> onCode = new StreamController();
-  HttpServer server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
+  HttpServer server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080, shared: true);
   server.listen((HttpRequest request) async {
     final String code = request.uri.queryParameters["code"];
     request.response

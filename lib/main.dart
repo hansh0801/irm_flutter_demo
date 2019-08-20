@@ -36,7 +36,7 @@ void main() {
 
 
   router.define('make_form', handler: new Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    return new Make_Form();
+    return new MainPage();
   }));
 
 
