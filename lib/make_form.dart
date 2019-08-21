@@ -75,26 +75,6 @@ class _MainPage extends State<MainPage> {
       body: Container(
         child: ListView(
           children: <Widget>[
-            Divider(),
-            ListTile(title: const Text('General')),
-            SwitchListTile(
-              title: const Text('Enable Bluetooth'),
-              value: _bluetoothState.isEnabled,
-              onChanged: (bool value) {
-                // Do the request and update with the true value then
-                future() async {
-                  // async lambda seems to not working
-                  if (value)
-                    await FlutterBluetoothSerial.instance.requestEnable();
-                  else
-                    await FlutterBluetoothSerial.instance.requestDisable();
-                }
-
-                future().then((_) {
-                  setState(() {});
-                });
-              },
-            ),
             ListTile(
               title: const Text('Bluetooth status'),
               subtitle: Text(_bluetoothState.toString()),
@@ -115,12 +95,12 @@ class _MainPage extends State<MainPage> {
               onLongPress: null,
             ),
             Divider(),
-            ListTile(title: const Text('Multiple connections example')),
+            ListTile(title: const Text('Data')),
             ListTile(
               title: RaisedButton(
                 child: ((_collectingTask != null && _collectingTask.inProgress)
-                    ? const Text('Disconnect and stop background collecting')
-                    : const Text('Connect to start background collecting')),
+                    ? const Text('Disconnect')
+                    : const Text('Connect')),
                 onPressed: () async {
                   if (_collectingTask != null && _collectingTask.inProgress) {
                     await _collectingTask.cancel();
@@ -129,8 +109,8 @@ class _MainPage extends State<MainPage> {
                     });
                   } else {
                     final BluetoothDevice selectedDevice =
-                    await Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
+                        await Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
                       return SelectBondedDevicePage(checkAvailability: false);
                     }));
 
@@ -146,26 +126,28 @@ class _MainPage extends State<MainPage> {
             ),
             ListTile(
                 title: RaisedButton(
-                  child: const Text('View background collected data'),
-                  onPressed: (_collectingTask != null)
-                      ? () {
-                    print('DATA@@@ : ${_collectingTask.buffer}');
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return ScopedModel<BackgroundCollectingTask>(
-                        model: _collectingTask,
-                        child: BackgroundCollectedPage(),
-                      );
-                    }));
-                  }
-                      : null,
-                )),
+              child: const Text('View data'),
+              onPressed: (_collectingTask != null)
+                  ? () {
+                      print('DATA@@@ : ${_collectingTask.buffer}');
+                      print(String.fromCharCodes(_collectingTask.buffer));
+                      print('patientData: $patientData');
+                      print('patientDataLength: ${patientData.length}');
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ScopedModel<BackgroundCollectingTask>(
+                          model: _collectingTask,
+                          child: BackgroundCollectedPage(),
+                        );
+                      }));
+                    }
+                  : null,
+            )),
           ],
         ),
       ),
     );
   }
-
 
   Future<void> _startBackgroundTask(
       BuildContext context, BluetoothDevice server) async {

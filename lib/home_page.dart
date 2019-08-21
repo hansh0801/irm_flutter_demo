@@ -132,7 +132,7 @@ class _Home_PageState extends State<Home_Page> {
             children: <Widget>[
               myItems(Icons.people, "patients", 0xffed622b, 'patients_info'),
               myItems(Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
-              myItems(Icons.format_list_bulleted, "make form", 0xff216bd6, 'make_form'),
+              myItems(Icons.bluetooth, "Bluetooth", 0xff216bd6, 'make_form'),
               myItems(Icons.timeline, "Image Viewer", 0xff702670, 'image_viewer'),
             ],
             staggeredTiles: [
