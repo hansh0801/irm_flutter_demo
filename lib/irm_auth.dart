@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'japiRequest.dart';
-import 'login_page.dart';
 
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: camel_case_types
@@ -15,7 +14,7 @@ Group currentgroupkey;
 
 Future<Stream<String>> server() async {
   final StreamController<String> onCode = new StreamController();
-  HttpServer server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
+  HttpServer server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080, shared: true);
   server.listen((HttpRequest request) async {
     final String code = request.uri.queryParameters["code"];
     request.response
