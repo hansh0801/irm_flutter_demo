@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
-import 'login_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'patients_info.dart';
-import 'get_patient_data.dart';
-import 'dart:io';
 import "package:flutter/services.dart";
 import 'drawer.dart';
 
+// ignore_for_file: camel_case_types
+
 class Home_Page extends StatefulWidget {
-
-
-
   @override
   _Home_PageState createState() => _Home_PageState();
 }
@@ -33,7 +28,6 @@ class _Home_PageState extends State<Home_Page> {
                 context,
                 navigateto,
               );
-
             },
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -132,7 +126,7 @@ class _Home_PageState extends State<Home_Page> {
             children: <Widget>[
               myItems(Icons.people, "patients", 0xffed622b, 'patients_info'),
               myItems(Icons.person_add, "new patient", 0xfffad610, 'new_patient'),
-              myItems(Icons.bluetooth, "Bluetooth", 0xff216bd6, 'make_form'),
+              myItems(Icons.bluetooth, "Bluetooth", 0xff216bd6, 'bluetooth'),
               myItems(Icons.timeline, "Image Viewer", 0xff702670, 'image_viewer'),
             ],
             staggeredTiles: [

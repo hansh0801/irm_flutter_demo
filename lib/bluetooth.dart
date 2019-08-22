@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import './SelectBondedDevicePage.dart';
-import './BackgroundCollectingTask.dart';
-import './BackgroundCollectedPage.dart';
+import 'SelectBondedDevicePage.dart';
+import 'BackgroundCollectingTask.dart';
+import 'BackgroundCollectedPage.dart';
 
-class MainPage extends StatefulWidget {
+class BluetoothTest extends StatefulWidget {
   @override
-  _MainPage createState() => new _MainPage();
+  _BluetoothTest createState() => new _BluetoothTest();
 }
 
-class _MainPage extends State<MainPage> {
+class _BluetoothTest extends State<BluetoothTest> {
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
 
   String _address = "...";
@@ -54,8 +54,6 @@ class _MainPage extends State<MainPage> {
         _name = name;
       });
     });
-
-    // Listen for futher state changes
   }
 
   @override

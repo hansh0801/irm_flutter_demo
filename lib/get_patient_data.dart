@@ -136,16 +136,6 @@ Future dcmStudySearch({List vgroup_key_list, List author_user_key_list, patient_
   patient_sex, study_id, study_dttm_from, study_dttm_to, study_desc, patient_age,
   accession_no, modality_list, offset, limit, sort_by, sort_dir}) async {
 
-  String vgroupKeyList = '';
-  if(vgroup_key_list != null){
-    vgroupKeyList = '{' + vgroup_key_list?.join(',') + '}';
-  }
-
-  String authorUserKeyList = '';
-  if(author_user_key_list != null){
-    authorUserKeyList = '{' + author_user_key_list?.join(',') + '}';
-  }
-
   var userKey = await userLookup();
   print(userKey);
 

@@ -60,6 +60,7 @@ class BackgroundCollectingTask extends Model {
 
   bool inProgress;
 
+  //데이터를 출력하기 쉽게 변환
   BackgroundCollectingTask._fromConnection(this._connection) {
     _connection.input.listen((data) {
       buffer = data;

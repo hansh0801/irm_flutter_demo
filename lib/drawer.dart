@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'irm_auth.dart';
 
-
-
-
 final Color primary = Colors.white;
 final Color active = Colors.grey.shade800;
 final Color divider = Colors.grey.shade600;
 
-
 class OvalRightBorderClipper extends CustomClipper<Path> {
-
-
-
   @override
   Path getClip(Size size) {
     var path = Path();
@@ -30,13 +23,9 @@ class OvalRightBorderClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
-
 }
 
-
-
 buildDrawer() {
-  final String image = "images/sample.png";
   return ClipPath(
     clipper: OvalRightBorderClipper(),
     child: Container(

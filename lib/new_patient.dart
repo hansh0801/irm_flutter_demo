@@ -88,7 +88,7 @@ class _New_PatientState extends State<New_Patient> {
       'vgroup_key': '${currentgroupkey.vgroup_key}',
       'patient_id_value': '${text_patient_id_value.text}',
       'patient_name': '${text_patient_name.text}',
-      'patient_sex': '${patient_sex}',
+      'patient_sex': '$patient_sex',
       'patient_birth_dttm': date.toString(),
       'patient_phone': '${text_patient_phone.text}',
       'patient_address': '${text_patient_address.text}',

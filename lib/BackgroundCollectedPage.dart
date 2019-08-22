@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import './BackgroundCollectingTask.dart';
+import 'BackgroundCollectingTask.dart';
 import 'package:json_table/json_table.dart';
 
 class BackgroundCollectedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (patientData != null) {
+      //데이터를 받았으면 표 형식으로 출력
       return Scaffold(
           appBar: AppBar(title: Text('Data')),
           body: JsonTable(
@@ -41,18 +42,9 @@ class BackgroundCollectedPage extends StatelessWidget {
                 ),
               );
             },
-          )
-
-          /*ListView.builder(itemBuilder: (BuildContext context, int index) {
-        if (index < patientData.length) {
-          return ListTile(title: Text(patientData[index].toString()));
-        } else {
-          return ListTile();
-        }
-      }),*/
-
-          );
+          ));
     } else {
+      //데이터가 없으면 빈 화면 출력
       return Scaffold(
         appBar: AppBar(
           title: Text('Data'),
