@@ -4,6 +4,8 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 
+// ignore_for_file: camel_case_types
+
 class Image_Viewer extends StatefulWidget {
   @override
   _Image_ViewerState createState() => _Image_ViewerState();
@@ -43,6 +45,7 @@ class _Image_ViewerState extends State<Image_Viewer> {
   }
 
   Future _getcookies() async{
+    //자바스크립트 코드로 쿠키 삽입 후 새로고침
     print("get cookies");
 
     await evalJavascript('document.cookie="Authority=manager"');

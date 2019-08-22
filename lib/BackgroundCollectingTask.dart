@@ -7,7 +7,7 @@ List<String> patientDataList = [];
 List<Map> patientData = [];
 List<String> dataList = [];
 
-Map splitData(String stringData) {
+Map splitData(stringData) {
   List<String> splitString = stringData.split('|');
   Map mapData = {
     'Device number': splitString[0],
@@ -44,7 +44,7 @@ Map splitData(String stringData) {
     'Reserved 5': splitString[31],
   };
 
-  print(mapData);
+  print('mapData $mapData');
 
   return mapData;
 }
@@ -60,22 +60,19 @@ class BackgroundCollectingTask extends Model {
 
   bool inProgress;
 
+  //데이터를 출력하기 쉽게 변환
   BackgroundCollectingTask._fromConnection(this._connection) {
     _connection.input.listen((data) {
-      print('DATA@: $data');
       buffer = data;
 
       String stringData = String.fromCharCodes(buffer);
+      print(stringData);
 
       dataList = stringData.split('\$1|');
 
       /// $1|A6RLG100006|20150120100700|CHOI|JOHN|30|Male|PSA|PSLYC69|2017.06.26|12.45|||||ng/mL||||||G|G|0|||||||||
 
-      for (int i = 1; i < dataList.length; i++) {
-        patientDataList.add(dataList[i]);
-        patientData.add(splitData(
-            patientDataList[i - 1])); //patientData 는 Map형식, $1 개수만큼 저장
-      }
+      patientData.add(splitData(dataList[1]));
     }).onDone(() {
       inProgress = false;
       notifyListeners();
@@ -96,7 +93,6 @@ class BackgroundCollectingTask extends Model {
   Future<void> start() async {
     inProgress = true;
     buffer.clear();
-    //  samples.clear();
     notifyListeners();
     _connection.output.add(ascii.encode('start'));
     await _connection.output.allSent;

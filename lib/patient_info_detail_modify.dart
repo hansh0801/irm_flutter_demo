@@ -13,7 +13,7 @@ import 'japiRequest.dart';
 
 class InfoModify extends StatefulWidget {
   final Patientlist patientinfo;
-  var imageData;
+  final imageData;
 
   InfoModify({Key key, this.patientinfo, this.imageData}) : super(key: key);
 
@@ -122,22 +122,24 @@ class _InfoModifyState extends State<InfoModify> {
 
   Widget PatientData(BuildContext context) => Column(
         children: <Widget>[
-          InkWell(child: choose
-              ? Image.file(
-            imageFile,
-            height: 150,
-          )
-              : widget.imageData.toString() !=
-              Uint8List.fromList('null'.codeUnits).toString()
-              ? Image.memory(
-            widget.imageData,
-            height: 150,
-          )
-              : Image.asset(
-            "images/gray.png",
-            height: 150,
-          ),onTap: ()=>showChiceDialog(context),),
-
+          InkWell(
+            child: choose
+                ? Image.file(
+                    imageFile,
+                    height: 150,
+                  )
+                : widget.imageData.toString() !=
+                        Uint8List.fromList('null'.codeUnits).toString()
+                    ? Image.memory(
+                        widget.imageData,
+                        height: 150,
+                      )
+                    : Image.asset(
+                        "images/gray.png",
+                        height: 150,
+                      ),
+            onTap: () => showChiceDialog(context),
+          ),
           DataTable(
             columns: <DataColumn>[
               DataColumn(
@@ -170,7 +172,6 @@ class _InfoModifyState extends State<InfoModify> {
                     ),
                   ),
                 ),
-                // stateless와 다르게 statefuld에서 ,paraameter 받을 때 widget.param 이렇게 써야함.
               ]),
               DataRow(cells: <DataCell>[
                 DataCell(Text("patient sex")),
@@ -295,8 +296,6 @@ class _InfoModifyState extends State<InfoModify> {
 
   @override
   Widget build(BuildContext context) {
-    //return_patientinfo = widget.patientinfo ;
-
     return Scaffold(
       appBar: new AppBar(
         title: Text("modify"),
@@ -323,7 +322,8 @@ class _InfoModifyState extends State<InfoModify> {
                           height: 50,
                         ),
                         SizedBox(
-                            /*height: 380, width: 500,*/ child: PatientData(context)),
+                            /*height: 380, width: 500,*/ child:
+                                PatientData(context)),
                         SizedBox(
                           height: 50,
                         ),

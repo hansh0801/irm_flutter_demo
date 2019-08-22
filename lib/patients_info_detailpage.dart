@@ -5,9 +5,11 @@ import 'irm_auth.dart';
 import 'patient_info_detail_modify.dart';
 import 'dart:typed_data';
 
+// ignore_for_file: non_constant_identifier_names
+
 class DetailPage extends StatefulWidget {
   final Patientlist patientinfo;
-  String groupName;
+  final groupName;
   DetailPage({Key key, this.patientinfo, this.groupName}) : super(key: key);
 
   @override
@@ -23,7 +25,6 @@ class _DetailPageState extends State<DetailPage> {
     return imagedata;
   }
 
-  @override
   Widget PatientData() => DataTable(
         columns: <DataColumn>[
           DataColumn(
