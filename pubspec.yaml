@@ -43,6 +43,10 @@ dependencies:
   camera:
   path_provider:
   path:
+  flutter_bluetooth_serial: ^0.2.2
+  scoped_model: ^1.0.1
+  json_table: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:
